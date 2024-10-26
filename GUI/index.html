@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sequence Optimizer</title>
+    <style>
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Golden Gate Assembly Optimizer</h1>
+        <p>This is a web application that will optimize the order of the cassettes for Golden Gate Assembly.</p>
+        <p>Created by: Jenna Stanislaw, Siobahn Kells, Anna Boerman, and Carolina Valderrama Hincapie</p>
+        <p>Affiliation: University of Colorado Boulder</p>
+    </div>
+    
+    <h1>Sequence Optimizer</h1>
+    
+    <!-- Form for inputting backbone and protein sequences -->
+    <form action="/optimize" method="post">
+        <!-- Label and input for backbone sequence -->
+        <label for="backbone">Backbone Sequence:</label>
+        <input type="text" id="backbone" name="backbone" required><br><br>
+        
+        <!-- Label and input for protein sequence -->
+        <label for="protein">Protein Sequence:</label>
+        <input type="text" id="protein" name="protein" required><br><br>
+        
+        <!-- Submit button to optimize sequences -->
+        <button type="submit">Optimize</button>
+    </form>
+</body>
+</html>
