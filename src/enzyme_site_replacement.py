@@ -1,67 +1,60 @@
 # take a sequence and an enzyme and find cut sites
+import enzyme_site_replacement_utils
 
-import replace_enzyme_sites
+def replace_enzyme_site(enzyme_fp, enzyme_name, DNA):
 
+    enzyme_class_objs = enzyme_site_replacement_utils.load_enzymes_from_csv(enzyme_fp)
+    enzyme_dict = enzyme_site_replacement_utils.create_enzyme_dict(enzyme_class_objs)
 
-enzymes_fp = './test_data/enzyme_sites.csv'
+    enzyme = enzyme_dict.get(enzyme_name)
 
-enzyme_class_objs = replace_enzyme_sites.load_enzymes_from_csv(enzymes_fp)
+    # Add this check to raise KeyError for invalid enzyme names
+    if enzyme is None:
+        raise KeyError(f"Enzyme '{enzyme_name}' not found.")
 
-enzyme_dict = replace_enzyme_sites.create_enzyme_dict(enzyme_class_objs)
+    DNA_rec_sites_rem = list(DNA)
 
-enzyme = enzyme_dict.get('BbsI')
+    fwd_matches, rev_matches = enzyme_site_replacement_utils.find_matching_sites(enzyme, DNA)
+    fwd_codons = enzyme_site_replacement_utils.get_affected_codons_by_recognition_sites(DNA, fwd_matches, enzyme.fwd_recognition_site)
+    rev_codons = enzyme_site_replacement_utils.get_affected_codons_by_recognition_sites(DNA, rev_matches, enzyme.rev_recognition_site)
 
-DNA = "ATCGAAGACGTCGTCTTCAGCTGAAGACGTCTTCCAGT"
+    all_codons = {**fwd_codons, **rev_codons}
 
-print(len(DNA))
+    print(all_codons)
 
-DNA_rec_sites_rem = list(DNA)
+    for key, value in all_codons.items():
+        print(key, value)
+        index_vals = [codon_tuple[1] for codon_tuple in value]
+        flattened_index_values = [index for sublist in index_vals for index in sublist]
+        max_idx = max(flattened_index_values)
+        min_idx = min(flattened_index_values)
 
-fwd_matches, rev_matches = replace_enzyme_sites.find_matching_sites(enzyme, DNA)
+        replaced = False
 
-print(fwd_matches, rev_matches)
+        for codon_tuple in value:
+            codon = codon_tuple[0]
+            codon_idx = codon_tuple[1][0]
+            alt_codons = enzyme_site_replacement_utils.generate_synonymous_codons_dna(codon)
+            for alt_codon in alt_codons:
+                DNA_rec_sites_rem[codon_idx:codon_idx+3] = alt_codon
+                # check if this removed the site
+                DNA_check = ''.join(DNA_rec_sites_rem)
+                fwd_matches, rev_matches = enzyme_site_replacement_utils.find_matching_sites(enzyme, DNA_rec_sites_rem)
+                match_idx=fwd_matches+rev_matches
+                if key not in match_idx:
+                    print(f"Found replacement for codon {codon} for recognition site at index {key}, replaced with {alt_codon}")
+                    replaced = True
+                    break
 
-fwd_codons = replace_enzyme_sites.get_affected_codons_by_recognition_sites(DNA, fwd_matches, enzyme.fwd_recognition_site)
+            if not replaced:
+                continue
 
-rev_codons = replace_enzyme_sites.get_affected_codons_by_recognition_sites(DNA, rev_matches, enzyme.rev_recognition_site)
-
-all_codons = {**fwd_codons, **rev_codons}
-
-print(all_codons)
-
-for key, value in all_codons.items():
-    print(key, value)
-    index_vals = [codon_tuple[1] for codon_tuple in value]
-    flattened_index_values = [index for sublist in index_vals for index in sublist]
-    max_idx = max(flattened_index_values)
-    min_idx = min(flattened_index_values)
-
-    replaced = False
-
-    for codon_tuple in value:
-        codon = codon_tuple[0]
-        codon_idx = codon_tuple[1][0]
-        alt_codons = replace_enzyme_sites.generate_synonymous_codons_dna(codon)
-        for alt_codon in alt_codons:
-            DNA_rec_sites_rem[codon_idx:codon_idx+3] = alt_codon
-            # check if this removed the site
-            DNA_check = ''.join(DNA_rec_sites_rem)
-            fwd_matches, rev_matches = replace_enzyme_sites.find_matching_sites(enzyme, DNA_rec_sites_rem)
-            match_idx=fwd_matches+rev_matches
-            if key not in match_idx:
-                print(f"Found replacement for codon {codon} for recognition site at index {key}, replaced with {alt_codon}")
-                replaced = True
+            if replaced:
                 break
 
         if not replaced:
-            continue
+            raise ValueError(f"No suitable replacement found for recognition site at index {key}.")
 
-        if replaced:
-            break
+    new_DNA=''.join(DNA_rec_sites_rem)
 
-    if not replaced:
-        print(f"Alternative codon for recognition site at index {key} could not be found")
-
-print(''.join(DNA_rec_sites_rem))
-
-new_DNA=''.join(DNA_rec_sites_rem)
+    return new_DNA

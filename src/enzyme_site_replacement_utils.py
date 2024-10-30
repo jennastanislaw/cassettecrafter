@@ -110,10 +110,9 @@ def get_codons_with_full_indices(dna_sequence):
     # Iterate over the sequence in steps of 3 to get codons
     for i in range(0, len(seq), 3):
         codon = str(seq[i:i + 3])  # Extract the codon
-        if len(codon) == 3:  # Ensure it's a complete codon
-            # Create a list of indices for the bases within this codon
-            indices = [i, i + 1, i + 2]  # Indices for the three bases
-            codon_list.append((codon, indices))  # Append a tuple of (codon, indices)
+        # Create a list of indices for the bases within this codon
+        indices = [i, i + 1, i + 2]  # Indices for the three bases
+        codon_list.append((codon, indices))  # Append a tuple of (codon, indices)
 
     return codon_list
 
