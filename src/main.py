@@ -1,31 +1,49 @@
+"""
+From provided sequence and allowed mutations, produces a library of sequences
+that contain all combinations of the desired mutations that are compatible with 
+Golden Gate Assembly
+
+Usage: python3 main.py -m [allowed mutations file] -b [plasmid backbone] 
+        -e [restriction enzyme name] -d [file with enzyme data] 
+        -m [minimum oligo size] -f [file with genes to insert]
+
+Example: python3 main.py -m ./test_data/demo_mutation_list.csv 
+                -f ./test_data/LY011_test_seq_single.csv
+    When run from the directory above src. Adjust paths as needed
+
+"""
+
 import argparse
-# import utils
-from helper_functions import *
+import os
 
-"""
-Currently running with:
-python3 main.py -m ../test_data/demo_mutation_list.csv -f ../test_data/LY011_test_seq_single.csv
-python3 main.py -m ../test_data/demo_mutation_list.csv -f ../test_data/LY011_test_seq_single.fa
+from process_inputs import process_inputs
+from generate_mutant_lib import generate_mutant_lib
+from process_sequence_list import (replace_enzyme_sites_in_dataframe, 
+                                    process_dna_sequences)
 
-"""
+def generate_assembly_library(gene_file, mutations, backbone, enzyme_data, 
+                      enzyme_name, min_oligo_size):
 
-def generate_assembly(gene_file, mutations, backbone):
-    name, starting_dna = read_input(gene_file)
-    # Do some checks on the input in above fn
-   
-    mutations_df = mutation_file_to_df(mutations, starting_dna)
-    print(mutations_df)
-    print(starting_dna)
+    name, starting_dna, mutations_df = process_inputs(gene_file,mutations)
 
-    library_dict = generate_mutant_lib(starting_dna,mutations_df, name)
-    print(library_dict)
-    #generate_dna_lib
+    library_df = generate_mutant_lib(starting_dna,mutations_df, name)
+
+    replace_enzyme_sites_in_dataframe(library_df, enzyme_data, enzyme_name)
+
+    final_df = process_dna_sequences(library_df, enzyme_data, enzyme_name,
+                                     min_oligo_size)
+
+    # print(final_df)
+
+    # assert final_df.equals(library_df)
+
+    return final_df
 
 def parseargs():
     #TODO: add docstring and decriptions 
     parser=argparse.ArgumentParser(
         description="""""", 
-        prog="parse_inputs.py"
+        prog="generate_assembly_library.py"
     )
 
     parser.add_argument('--gene_file','-f', type=str,
@@ -39,6 +57,17 @@ def parseargs():
                         help="""File containing mutations for genes. Should contain 
                         the amino acid position (starting from 1) in the first column,
                         and the allowed mutations in the second column""")
+    parser.add_argument("--enzyme_data", "-d", type=str, required=False,
+                        default=f"{os.path.dirname(os.path.abspath(__file__))}/data/enzyme_sites.csv", 
+                        help="""File path to enzyme data file. If no file is provided, the
+                            default path will be used, referencing the provided enzyme data file
+                            at src/data/enzyme_sites.csv""")
+    parser.add_argument("--enzyme_name","-e",type=str,
+                        default="BbsI", required=False,
+                        help="""Enzyme name, matching name in the enzyme data file. Default is BbsI""")
+    parser.add_argument("--min_oligo_size", "-s", type=int,
+                        default=20, required=False,
+                        help="""Minimum oligo size required for each DNA sequence. Default 20""")
 
     args = parser.parse_args()
     return args
@@ -46,6 +75,5 @@ def parseargs():
 if __name__ == "__main__":
     args=parseargs()
     # Main function
-    generate_assembly(args.gene_file, args.mutations, args.backbone)
-
-
+    generate_assembly_library(args.gene_file, args.mutations, args.backbone,
+                      args.enzyme_data, args.enzyme_name, args.min_oligo_size) 

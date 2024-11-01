@@ -20,10 +20,10 @@ def replace_enzyme_site(enzyme_fp, enzyme_name, DNA):
 
     all_codons = {**fwd_codons, **rev_codons}
 
-    print(all_codons)
+    # print(all_codons)
 
     for key, value in all_codons.items():
-        print(key, value)
+        # print(key, value)
         index_vals = [codon_tuple[1] for codon_tuple in value]
         flattened_index_values = [index for sublist in index_vals for index in sublist]
         max_idx = max(flattened_index_values)

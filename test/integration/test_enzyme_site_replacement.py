@@ -1,10 +1,10 @@
 import sys
 import os
 import pytest
-from enzyme_site_replacement import replace_enzyme_site
 
 # Add the src directory to the Python path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../src')))
+from enzyme_site_replacement import replace_enzyme_site
 
 class TestReplaceEnzymeSite:
     @pytest.fixture

@@ -55,24 +55,25 @@ def process_dna_sequences(df, enzyme_fp, enzyme_name, min_oligo_size):
 
     return df
 
-# EXAMPLE USAGE
+def test():
+    # EXAMPLE USAGE
 
-# Sample DataFrame with DNA sequences
-data = {
-    'DNA': ['ATGCGTACGTAG', 'CGTAGCTAGCAT', 'TGCATGCAATGC']
-}
-df = pd.DataFrame(data)
+    # Sample DataFrame with DNA sequences
+    data = {
+        'DNA': ['ATGCGTACGTAG', 'CGTAGCTAGCAT', 'TGCATGCAATGC']
+    }
+    df = pd.DataFrame(data)
 
-# Define the file path to the enzyme CSV file, enzyme name, and minimum oligo size
-enzyme_fp = '../test_data/enzyme_sites.csv'  # Update this path to the location of your enzyme data file
-enzyme_name = 'BbsI'  # Enzyme name as defined in the CSV
-min_oligo_size = 20    # Minimum oligo size required for each DNA sequence
+    # Define the file path to the enzyme CSV file, enzyme name, and minimum oligo size
+    enzyme_fp = '../test_data/enzyme_sites.csv'  # Update this path to the location of your enzyme data file
+    enzyme_name = 'BbsI'  # Enzyme name as defined in the CSV
+    min_oligo_size = 20    # Minimum oligo size required for each DNA sequence
 
-# Step 1: Replace enzyme sites in each DNA sequence
-df = replace_enzyme_sites_in_dataframe(df, enzyme_fp, enzyme_name)
+    # Step 1: Replace enzyme sites in each DNA sequence
+    df = replace_enzyme_sites_in_dataframe(df, enzyme_fp, enzyme_name)
 
-# Step 2: Add restriction sites and ensure minimum length
-df = process_dna_sequences(df, enzyme_fp, enzyme_name, min_oligo_size)
+    # Step 2: Add restriction sites and ensure minimum length
+    df = process_dna_sequences(df, enzyme_fp, enzyme_name, min_oligo_size)
 
-# Display the processed DataFrame
-print(df)
+    # Display the processed DataFrame
+    print(df)

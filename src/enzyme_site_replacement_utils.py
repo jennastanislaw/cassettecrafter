@@ -1,5 +1,6 @@
 import pandas as pd
 from Bio.Seq import Seq
+from dna_aa_definitions import CODON_TABLE_DNA, CODON_TO_AMINO_ACID_DNA
 
 class Enzyme:
     def __init__(self, name, fwd_recognition_site, rev_recognition_site, spacer_length, OH_length):
@@ -60,43 +61,13 @@ def find_matching_sites(enzyme, dna_sequence):
 
     return fwd_matches, rev_matches
 
-
-# Define the standard genetic code for DNA
-codon_table_dna = {
-    'F': ['TTT', 'TTC'],
-    'L': ['TTA', 'TTG', 'CTT', 'CTC', 'CTA', 'CTG'],
-    'I': ['ATT', 'ATC', 'ATA'],
-    'M': ['ATG'],  # Start codon
-    'V': ['GTT', 'GTC', 'GTA', 'GTG'],
-    'S': ['TCT', 'TCC', 'TCA', 'TCG'],
-    'P': ['CCT', 'CCC', 'CCA', 'CCG'],
-    'T': ['ACT', 'ACC', 'ACA', 'ACG'],
-    'A': ['GCT', 'GCC', 'GCA', 'GCG'],
-    'Y': ['TAC', 'TAT'],
-    'H': ['CAT', 'CAC'],
-    'Q': ['CAA', 'CAG'],
-    'N': ['AAT', 'AAC'],
-    'K': ['AAA', 'AAG'],
-    'D': ['GAT', 'GAC'],
-    'E': ['GAA', 'GAG'],
-    'C': ['TGT', 'TGC'],
-    'W': ['TGG'],
-    'R': ['CGT', 'CGC', 'CGA', 'CGG', 'AGA', 'AGG'],
-    'G': ['GGT', 'GGC', 'GGA', 'GGG'],
-    '*': ['TAA', 'TAG', 'TGA'],  # Stop codons
-}
-
-# Invert the codon table for easier lookup
-codon_to_amino_acid_dna = {codon: aa for aa, codons in codon_table_dna.items() for codon in codons}
-
-
 def generate_synonymous_codons_dna(codon):
     """Generate synonymous codons (alternative codons for the same amino acid) for DNA."""
-    if codon not in codon_to_amino_acid_dna:
+    if codon not in CODON_TO_AMINO_ACID_DNA:
         raise ValueError(f"Invalid codon: {codon}")
 
-    amino_acid = codon_to_amino_acid_dna[codon]
-    synonymous_codons = codon_table_dna[amino_acid]
+    amino_acid = CODON_TO_AMINO_ACID_DNA[codon]
+    synonymous_codons = CODON_TABLE_DNA[amino_acid]
 
     # Remove the input codon from the list to get alternatives
     return [c for c in synonymous_codons if c != codon]
