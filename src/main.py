@@ -11,11 +11,13 @@ python3 main.py -m ../test_data/demo_mutation_list.csv -f ../test_data/LY011_tes
 
 def generate_assembly(gene_file, mutations, backbone):
     name, starting_dna = read_input(gene_file)
+    # Do some checks on the input in above fn
+   
+    mutations_df = mutation_file_to_df(mutations, starting_dna)
+    print(mutations_df)
+    print(starting_dna)
 
-    # built-in biopython function
-    starting_aa = starting_dna.translate()
-
-    library_dict = generate_mutant_lib(starting_aa._data,mutations, name)
+    library_dict = generate_mutant_lib(starting_dna,mutations_df, name)
     print(library_dict)
     #generate_dna_lib
 
