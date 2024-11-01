@@ -55,7 +55,7 @@ def process_dna_sequences(df, enzyme_fp, enzyme_name, min_oligo_size):
 
     return df
 
-def test():
+if __name__ == "__main__":
     # EXAMPLE USAGE
 
     # Sample DataFrame with DNA sequences

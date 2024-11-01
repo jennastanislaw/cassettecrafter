@@ -7,7 +7,7 @@ Usage: python3 main.py -m [allowed mutations file] -b [plasmid backbone]
         -e [restriction enzyme name] -d [file with enzyme data] 
         -m [minimum oligo size] -f [file with genes to insert]
 
-Example: python3 main.py -m ./test_data/demo_mutation_list.csv 
+Example: python3 src/main.py -m ./test_data/demo_mutation_list.csv 
                 -f ./test_data/LY011_test_seq_single.csv
     When run from the directory above src. Adjust paths as needed
 
@@ -23,6 +23,24 @@ from process_sequence_list import (replace_enzyme_sites_in_dataframe,
 
 def generate_assembly_library(gene_file, mutations, backbone, enzyme_data, 
                       enzyme_name, min_oligo_size):
+    """Generates Golden Gate-compatible sequence library containing all possible
+        combinations of allowed mutations 
+
+    Args:
+        gene_file (str): Path to file containing genes to be inserted. Can be a fasta or csv
+        mutations (str): Path to csv file with mutation information
+        backbone (str): Path to file containing sequence of the plasmid backbone
+                    into which genes will be inserted. NOTE: this is currently not 
+                    being utilized, but will be functional in future versions
+        enzyme_data (str): Path to file containing enzyme information
+        enzyme_name (str): Name of enzyme whose recognition sites should be incorporated
+                    into the genes. Note this name must match the name in the 
+                    enzyme_data file
+        min_oligo_size (int): Minimum oligo size required for each DNA sequence
+
+    Returns:
+        DataFrame : Pandas DataFrame containing mutation name and sequence
+    """
 
     name, starting_dna, mutations_df = process_inputs(gene_file,mutations)
 
@@ -35,15 +53,13 @@ def generate_assembly_library(gene_file, mutations, backbone, enzyme_data,
 
     # print(final_df)
 
-    # assert final_df.equals(library_df)
-
     return final_df
 
 def parseargs():
-    #TODO: add docstring and decriptions 
     parser=argparse.ArgumentParser(
-        description="""""", 
-        prog="generate_assembly_library.py"
+        description="""Generates Golden Gate-compatible sequence library containing all possible
+        combinations of allowed mutations""", 
+        prog="main.py"
     )
 
     parser.add_argument('--gene_file','-f', type=str,
