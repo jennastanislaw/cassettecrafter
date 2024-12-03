@@ -18,8 +18,7 @@ import os
 
 from process_inputs import process_inputs
 from generate_mutant_lib import generate_mutant_lib
-from process_sequence_list import (replace_enzyme_sites_in_dataframe, 
-                                    process_dna_sequences)
+from process_sequence_list import process_dna_sequences
 from enzyme_site_replacement_utils import (load_enzymes_from_csv, create_enzyme_dict)
 from mixed_base_rec_site_check import degen_codon_checker
 from enzyme_site_replacement import remove_enzyme_sites
@@ -104,7 +103,7 @@ def parseargs():
     parser.add_argument('--gene_file','-f', type=str,
                         default='',
                         help='File containing gene to insert')
-    parser.add_argument('--mutations','-m', type=str,
+    parser.add_argument('--mutations','-u', type=str,
                         default='', required=True,
                         help="""File containing mutations for genes. Should contain 
                         the amino acid position (starting from 1) in the first column,
@@ -112,10 +111,10 @@ def parseargs():
     parser.add_argument("--enzyme_name","-e",type=str,
                         default="BbsI", required=False,
                         help="""Enzyme name, matching name in the enzyme data file. Default is BbsI""")
-    parser.add_argument("--min_oligo_size", "-s", type=int,
+    parser.add_argument("--min_oligo_size", "-m", type=int,
                         default=20, required=True,
                         help="""Minimum oligo size required for each DNA sequence. Default 20""")
-    parser.add_argument("--min_oligo_size", "-s", type=int,
+    parser.add_argument("--max_oligo_size", "-M", type=int,
                         default=100, required=True,
                         help="""Maximum oligo size required for each DNA sequence. Default 100""")
 
