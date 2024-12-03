@@ -20,9 +20,20 @@ from process_inputs import process_inputs
 from generate_mutant_lib import generate_mutant_lib
 from process_sequence_list import (replace_enzyme_sites_in_dataframe, 
                                     process_dna_sequences)
+from enzyme_site_replacement_utils import (load_enzymes_from_csv, create_enzyme_dict)
+from mixed_base_rec_site_check import degen_codon_checker
+from enzyme_site_replacement import remove_enzyme_sites
+from split_sites import (find_split_indices, generate_cassettes)
+
+# to include in global variable file:
+# enzyme_data
+# Codon table to DNA
+# mixed base codon info
+
+# remove plasmid backbone
 
 def generate_assembly_library(gene_file, mutations, backbone, enzyme_data, 
-                      enzyme_name, min_oligo_size):
+                      enzyme_name, min_oligo_size, max_oligo_size): # need to add in user specified min and max oligo lengths
     """Generates Golden Gate-compatible sequence library containing all possible
         combinations of allowed mutations 
 
@@ -42,14 +53,45 @@ def generate_assembly_library(gene_file, mutations, backbone, enzyme_data,
         DataFrame : Pandas DataFrame containing mutation name and sequence
     """
 
+# 1. Create enzyme object
+    enzyme_class_objs = load_enzymes_from_csv(enzyme_fp) # should this be enzyme_data?
+    enzyme_dict = create_enzyme_dict(enzyme_class_objs)
+
+    enzyme = enzyme_dict.get(enzyme_name)
+
+    if enzyme is None:
+        raise KeyError(f"Enzyme '{enzyme_name}' not found.")
+
+# 2. Process inputs
     name, starting_dna, mutations_df = process_inputs(gene_file,mutations)
 
+# 3. Generate library of mutant sequences
     library_df = generate_mutant_lib(starting_dna,mutations_df, name)
 
-    replace_enzyme_sites_in_dataframe(library_df, enzyme_data, enzyme_name)
+# 4. Replace any unwanted enzyme sites
+## This is going to make the naming of the sequences weird, will need to fix this
 
-    final_df = process_dna_sequences(library_df, enzyme_data, enzyme_name,
-                                     min_oligo_size)
+# 4.1 check degenerate codons for sites
+
+    valid_mixed_bases = degen_codon_checker(library_df, enzyme)
+
+# 4.2 replace sites
+
+    rec_sites_removed = remove_enzyme_sites(enzyme, valid_mixed_bases)
+# 5. Find split sites
+
+    reference = rec_sites_removed['rec_sites_removed'].iloc[0]
+
+    sequences = rec_sites_removed['rec_sites_removed'].tolist()
+
+    split_sites = find_split_indices(reference, sequences, min_oligo_size, max_oligo_size, enzyme)
+
+# 6 generate cassettes
+    cassettes_df = generate_cassettes(rec_sites_removed, split_sites)
+
+    # 7. Final sequence processing (add terminal enzyme sites and extra bases if needed)
+
+    final_df = process_dna_sequences(cassettes_df, enzyme, min_oligo_size)
 
     # print(final_df)
 
