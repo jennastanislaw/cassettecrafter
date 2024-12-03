@@ -1,4 +1,5 @@
-from dna_aa_definitions import CODON_TO_AMINO_ACID_DNA
+# from dna_aa_definitions import CODON_TO_AMINO_ACID_DNA
+from dna_aa_definitions import CODON_TABLE_DNA, CODON_TO_AMINO_ACID_DNA, MIXED_BASES, MIXED_BASES_COMBO_TO_BASE
 
 def make_mut_dict(editable_codon_seq, all_combinations, name, mutations_df):
     """From a list of mutation combinations, generate a dictionary containing 
@@ -34,7 +35,14 @@ def make_mut_dict(editable_codon_seq, all_combinations, name, mutations_df):
 
             # Check if this combo contains a mutation from the original amino acid
             og_aa = mutations_df.loc[pos,"original"]
-            mut_aa = CODON_TO_AMINO_ACID_DNA[combo[i]]
+
+            last_base = combo[i][-1]
+            if last_base not in "ACGT":
+                codon1 = combo[i][:2] + MIXED_BASES[last_base][0]
+                codon2 = combo[i][:2] + MIXED_BASES[last_base][1]
+                mut_aa = CODON_TO_AMINO_ACID_DNA[codon1] + CODON_TO_AMINO_ACID_DNA[codon2]
+            else: 
+                mut_aa = CODON_TO_AMINO_ACID_DNA[combo[i]]
             if og_aa != mut_aa:
                 # If yes, add mutation info to name of sequence
                 # Format: [og AA][position][mut AA] (example: H3A, mutate His at pos 3 to Ala)

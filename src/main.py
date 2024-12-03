@@ -21,7 +21,12 @@ from generate_mutant_lib import generate_mutant_lib
 from process_sequence_list import (replace_enzyme_sites_in_dataframe, 
                                     process_dna_sequences)
 
-def generate_assembly_library(gene_file, mutations, backbone, enzyme_data, 
+from dna_aa_definitions import CODON_TABLE_DNA, CODON_TO_AMINO_ACID_DNA, MIXED_BASES, MIXED_BASES_COMBO_TO_BASE
+
+# take out the plasmid backbone stuff
+# make sure global var stuff works - remove other import and define in main
+
+def generate_assembly_library(gene_file, mutations, backbone_file, enzyme_data, 
                       enzyme_name, min_oligo_size):
     """Generates Golden Gate-compatible sequence library containing all possible
         combinations of allowed mutations 
@@ -30,8 +35,7 @@ def generate_assembly_library(gene_file, mutations, backbone, enzyme_data,
         gene_file (str): Path to file containing genes to be inserted. Can be a fasta or csv
         mutations (str): Path to csv file with mutation information
         backbone (str): Path to file containing sequence of the plasmid backbone
-                    into which genes will be inserted. NOTE: this is currently not 
-                    being utilized, but will be functional in future versions
+                    into which genes will be inserted.
         enzyme_data (str): Path to file containing enzyme information
         enzyme_name (str): Name of enzyme whose recognition sites should be incorporated
                     into the genes. Note this name must match the name in the 
@@ -45,6 +49,9 @@ def generate_assembly_library(gene_file, mutations, backbone, enzyme_data,
     name, starting_dna, mutations_df = process_inputs(gene_file,mutations)
 
     library_df = generate_mutant_lib(starting_dna,mutations_df, name)
+
+    print(library_df)
+    return
 
     replace_enzyme_sites_in_dataframe(library_df, enzyme_data, enzyme_name)
 
