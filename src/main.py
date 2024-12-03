@@ -32,17 +32,13 @@ from split_sites import (find_split_indices, generate_cassettes)
 
 # remove plasmid backbone
 
-def generate_assembly_library(gene_file, mutations, backbone, enzyme_data, 
-                      enzyme_name, min_oligo_size, max_oligo_size): # need to add in user specified min and max oligo lengths
+def generate_assembly_library(gene_file, mutations, enzyme_name, min_oligo_size, max_oligo_size):
     """Generates Golden Gate-compatible sequence library containing all possible
         combinations of allowed mutations 
 
     Args:
         gene_file (str): Path to file containing genes to be inserted. Can be a fasta or csv
         mutations (str): Path to csv file with mutation information
-        backbone (str): Path to file containing sequence of the plasmid backbone
-                    into which genes will be inserted. NOTE: this is currently not 
-                    being utilized, but will be functional in future versions
         enzyme_data (str): Path to file containing enzyme information
         enzyme_name (str): Name of enzyme whose recognition sites should be incorporated
                     into the genes. Note this name must match the name in the 
@@ -52,6 +48,7 @@ def generate_assembly_library(gene_file, mutations, backbone, enzyme_data,
     Returns:
         DataFrame : Pandas DataFrame containing mutation name and sequence
     """
+    enzyme_fp = './data/enzyme_sites.csv'
 
 # 1. Create enzyme object
     enzyme_class_objs = load_enzymes_from_csv(enzyme_fp) # should this be enzyme_data?
@@ -107,25 +104,20 @@ def parseargs():
     parser.add_argument('--gene_file','-f', type=str,
                         default='',
                         help='File containing gene to insert')
-    parser.add_argument('--backbone','-b', type=str,
-                        default='',required=False,
-                        help='File containing plasmid backbone sequence. Note should contain RE sites for GG')
     parser.add_argument('--mutations','-m', type=str,
-                        default='', required=False,
+                        default='', required=True,
                         help="""File containing mutations for genes. Should contain 
                         the amino acid position (starting from 1) in the first column,
                         and the allowed mutations in the second column""")
-    parser.add_argument("--enzyme_data", "-d", type=str, required=False,
-                        default=f"{os.path.dirname(os.path.abspath(__file__))}/data/enzyme_sites.csv", 
-                        help="""File path to enzyme data file. If no file is provided, the
-                            default path will be used, referencing the provided enzyme data file
-                            at src/data/enzyme_sites.csv""")
     parser.add_argument("--enzyme_name","-e",type=str,
                         default="BbsI", required=False,
                         help="""Enzyme name, matching name in the enzyme data file. Default is BbsI""")
     parser.add_argument("--min_oligo_size", "-s", type=int,
-                        default=20, required=False,
+                        default=20, required=True,
                         help="""Minimum oligo size required for each DNA sequence. Default 20""")
+    parser.add_argument("--min_oligo_size", "-s", type=int,
+                        default=100, required=True,
+                        help="""Maximum oligo size required for each DNA sequence. Default 100""")
 
     args = parser.parse_args()
     return args
@@ -133,5 +125,4 @@ def parseargs():
 if __name__ == "__main__":
     args=parseargs()
     # Main function
-    generate_assembly_library(args.gene_file, args.mutations, args.backbone,
-                      args.enzyme_data, args.enzyme_name, args.min_oligo_size) 
+    generate_assembly_library(args.gene_file, args.mutations, args.enzyme_name, args.min_oligo_size, args.max_oligo_size)
