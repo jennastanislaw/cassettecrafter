@@ -128,12 +128,12 @@ def add_mixed_bases_and_combine(allowed_codons_at_pos):
     if len(allowed_codons_at_pos) < 1:
         return allowed_codons_at_pos
     for i, curr_codon in enumerate(allowed_codons_at_pos[:-1]):
-        curr_codon_mod, base_1_2 = check_leu_arg_ser(curr_codon[:2])
+        curr_codon_mod, base_1_2 = check_leu_arg_ser(curr_codon)
         print("current", curr_codon)
 
         # Compare beginning of current codon to those in the allowed codons list
         for j, match_codon in enumerate(allowed_codons_at_pos[i+1:]):
-            match_codon_mod, match_first_two = check_leu_arg_ser(match_codon[:2])
+            match_codon_mod, match_first_two = check_leu_arg_ser(match_codon)
             print("match", match_codon)
 
             # If there is a match, find the mixed base that fits both codons
@@ -151,8 +151,8 @@ def add_mixed_bases_and_combine(allowed_codons_at_pos):
     return modifiable_allowed_codon_list 
 
 def get_mixed_base_codon(codonA, codonB):
+    print(codonA,codonB)
     base3_l = [codonA[-1],codonB[-1]]
-    print(base3_l)
     base3_l.sort()
     base3_joint_str = "".join(base3_l)
 
@@ -166,11 +166,15 @@ def get_mixed_base_codon(codonA, codonB):
     return codon
 
 def check_leu_arg_ser(codon):
+    # Assign the first possible codon with a possible match to another amino acid codon if the first two bases
     codon_base_1_2 = codon[:2]
     if codon_base_1_2 == "CT": # Leu
         codon_base_1_2 = "TT"
+        codon = "TTA"
     elif codon_base_1_2 == "CG": # Arg
         codon_base_1_2 = "AG"
+        codon = "AGA"
     elif codon_base_1_2 == "TC": # Ser
         codon_base_1_2 = "AG"
+        codon = "AGC"
     return codon, codon_base_1_2

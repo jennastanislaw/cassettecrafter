@@ -1,5 +1,5 @@
 # Define the standard genetic code for DNA
-CODON_TABLE_DNA = {
+old_CODON_TABLE_DNA = {
     'F': ['TTT', 'TTC'],
     'L': ['TTA', 'TTG', 'CTT', 'CTC', 'CTA', 'CTG'],
     'I': ['ATT', 'ATC', 'ATA'],
@@ -21,6 +21,32 @@ CODON_TABLE_DNA = {
     'R': ['CGT', 'CGC', 'CGA', 'CGG', 'AGA', 'AGG'],
     'G': ['GGT', 'GGC', 'GGA', 'GGG'],
     '*': ['TAA', 'TAG', 'TGA'],  # Stop codons
+}
+
+# From python_codon_tables https://pypi.org/project/python-codon-tables/ 
+# Optimized for E. coli
+CODON_TABLE_DNA={
+    '*': ['TAA', 'TAG', 'TGA'], # Stop codons
+    'A': ['GCA', 'GCC', 'GCG', 'GCT'], 
+    'C': ['TGC', 'TGT'], 
+    'D': ['GAC', 'GAT'], 
+    'E': ['GAA', 'GAG'], 
+    'F': ['TTC', 'TTT'], 
+    'G': ['GGA', 'GGC', 'GGG', 'GGT'], 
+    'H': ['CAC', 'CAT'], 
+    'I': ['ATA', 'ATC', 'ATT'], 
+    'K': ['AAA', 'AAG'], 
+    'L': ['CTA', 'CTC', 'CTG', 'CTT', 'TTA', 'TTG'], 
+    'M': ['ATG'],  # Start codon
+    'N': ['AAC', 'AAT'], 
+    'P': ['CCA', 'CCC', 'CCG', 'CCT'], 
+    'Q': ['CAA', 'CAG'], 
+    'R': ['AGA', 'AGG', 'CGA', 'CGC', 'CGG', 'CGT'], 
+    'S': ['AGC', 'AGT', 'TCA', 'TCC', 'TCG', 'TCT'], 
+    'T': ['ACA', 'ACC', 'ACG', 'ACT'], 
+    'V': ['GTA', 'GTC', 'GTG', 'GTT'], 
+    'W': ['TGG'], 
+    'Y': ['TAC', 'TAT']
 }
 
 # Invert the codon table for easier lookup

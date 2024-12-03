@@ -36,11 +36,12 @@ def make_mut_dict(editable_codon_seq, all_combinations, name, mutations_df):
             # Check if this combo contains a mutation from the original amino acid
             og_aa = mutations_df.loc[pos,"original"]
 
+            #TODO: move this naming to end?
             last_base = combo[i][-1]
             if last_base not in "ACGT":
                 codon1 = combo[i][:2] + MIXED_BASES[last_base][0]
                 codon2 = combo[i][:2] + MIXED_BASES[last_base][1]
-                mut_aa = CODON_TO_AMINO_ACID_DNA[codon1] + CODON_TO_AMINO_ACID_DNA[codon2]
+                mut_aa = CODON_TO_AMINO_ACID_DNA[codon1]+"/"+CODON_TO_AMINO_ACID_DNA[codon2]
             else: 
                 mut_aa = CODON_TO_AMINO_ACID_DNA[combo[i]]
             if og_aa != mut_aa:

@@ -21,8 +21,6 @@ from generate_mutant_lib import generate_mutant_lib
 from process_sequence_list import (replace_enzyme_sites_in_dataframe, 
                                     process_dna_sequences)
 
-from dna_aa_definitions import CODON_TABLE_DNA, CODON_TO_AMINO_ACID_DNA, MIXED_BASES, MIXED_BASES_COMBO_TO_BASE
-
 # take out the plasmid backbone stuff
 # make sure global var stuff works - remove other import and define in main
 
@@ -51,14 +49,13 @@ def generate_assembly_library(gene_file, mutations, backbone_file, enzyme_data,
     library_df = generate_mutant_lib(starting_dna,mutations_df, name)
 
     print(library_df)
-    return
 
     replace_enzyme_sites_in_dataframe(library_df, enzyme_data, enzyme_name)
 
     final_df = process_dna_sequences(library_df, enzyme_data, enzyme_name,
                                      min_oligo_size)
 
-    # print(final_df)
+    print(final_df) # export to csv in a way that pushes to the website
 
     return final_df
 
