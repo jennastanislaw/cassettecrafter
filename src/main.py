@@ -122,6 +122,19 @@ def parseargs():
     return args
 
 if __name__ == "__main__":
-    args=parseargs()
+    #args=parseargs()
     # Main function
-    generate_assembly_library(args.gene_file, args.mutations, args.enzyme_name, args.min_oligo_size, args.max_oligo_size)
+    #generate_assembly_library(args.gene_file, args.mutations, args.enzyme_name, args.min_oligo_size, args.max_oligo_size)
+
+
+    # Uncomment this line to run with hardcoded arguments for testing
+    final_result = generate_assembly_library(
+        gene_file="/Users/siobhan/PycharmProjects/cassettecrafter/test_data/LY011_test_seq_single.csv",
+        mutations="/Users/siobhan/PycharmProjects/cassettecrafter/test_data/demo_mutation_list.csv",
+        enzyme_name="BbsI",
+        min_oligo_size=20,
+        max_oligo_size=100
+    )
+
+    # Print or process the final result if needed
+    print(final_result)
