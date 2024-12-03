@@ -1,6 +1,6 @@
 # CassetteCrafter
 
-CassetteCrafter is a web app for generating cassettes for Golden Gate assembly. Users input DNA sequences, plasmid backbones, and protein sequences, and the app outputs optimized sequences ready for ordering.
+CassetteCrafter is a web app for generating plasmid cassettes for Golden Gate assembly. Users input DNA sequences, plasmid backbones, and protein sequences, and the app outputs optimized sequences ready for ordering.
 
 ## Project Structure
 
