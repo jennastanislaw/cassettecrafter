@@ -1,9 +1,10 @@
 import pandas as pd
-from process_inputs_utils import (get_gene_name, get_dna_seq, 
+import os
+from process_inputs_utils import (get_gene_name, get_seq, biopython_seq_from_str,
                                 get_allowed_codon_list, split_csl)
 
 # Main function
-def process_inputs(gene_file,mutations):
+def process_inputs(gene,mutations):
     """Process gene sequence input and allowed mutation input
 
     Args:
@@ -14,7 +15,14 @@ def process_inputs(gene_file,mutations):
         tuple (name, starting_dna, mutations_df): tuple with gene name, initial 
                 gene sequence, and pandas DataFrame with mutation information
     """
-    name, starting_dna = read_dna_input(gene_file)
+    # Check if gene input is a file or a string
+
+    if os.path.isfile(gene):
+        name, starting_dna = read_gene_input_from_file(gene)
+    else:
+        name = "gene1" #TODO: fill this with something else instead
+        starting_dna = biopython_seq_from_str(gene)
+
     # TODO add some checks on the input in above function
 
     mutations_df = mutation_file_to_df(mutations, starting_dna)
@@ -23,7 +31,7 @@ def process_inputs(gene_file,mutations):
 
 
 ### Helper functions for process_inputs - sub-function read_input ###
-def read_dna_input(file):
+def read_gene_input_from_file(file):
     """Extract gene name and sequence from input file
 
     Args:
@@ -39,7 +47,8 @@ def read_dna_input(file):
 
     # TODO: add functionality to accept amino acide sequence instead of DNA
     name = get_gene_name(file_lines,filetype)
-    seq = get_dna_seq(file_lines,filetype)
+
+    seq = get_seq(file_lines,filetype)
     return name, seq
 
 def mutation_file_to_df(mutations, og_seq_dna):
@@ -82,6 +91,4 @@ def mutation_file_to_df(mutations, og_seq_dna):
     mutation_df["codons_allowed"] = get_allowed_codon_list(mutation_df["mut_list"].tolist(),
                                      mutation_df["codons_original"].tolist())
     
-    print( mutation_df)
-
     return mutation_df

@@ -24,7 +24,7 @@ from process_sequence_list import (replace_enzyme_sites_in_dataframe,
 # take out the plasmid backbone stuff
 # make sure global var stuff works - remove other import and define in main
 
-def generate_assembly_library(gene_file, mutations, backbone_file, enzyme_data, 
+def generate_assembly_library(gene, mutations, backbone_file, enzyme_data, 
                       enzyme_name, min_oligo_size):
     """Generates Golden Gate-compatible sequence library containing all possible
         combinations of allowed mutations 
@@ -44,11 +44,11 @@ def generate_assembly_library(gene_file, mutations, backbone_file, enzyme_data,
         DataFrame : Pandas DataFrame containing mutation name and sequence
     """
 
-    name, starting_dna, mutations_df = process_inputs(gene_file,mutations)
+    name, starting_dna, mutations_df = process_inputs(gene,mutations)
 
     library_df = generate_mutant_lib(starting_dna,mutations_df, name)
 
-    print(library_df)
+    print(library_df["DNA"])
 
     replace_enzyme_sites_in_dataframe(library_df, enzyme_data, enzyme_name)
 

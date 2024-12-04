@@ -30,7 +30,7 @@ def get_gene_name(lines,filetype):
     return name.strip().replace('\ufeff', '') 
 
 # Read in the seq from the file
-def get_dna_seq(lines,filetype):
+def get_seq(lines,filetype):
     """Get DNA sequence from the second column of csv, or the remaining lines (lines after name) of a fasta
 
     Args:
@@ -49,7 +49,39 @@ def get_dna_seq(lines,filetype):
         for line in lines[1:]:
             seq+=line.strip()
 
-    return Seq(seq) #make it a biopython sequence for processing later
+    #make it a biopython sequence for processing later
+    # seq_obj = Seq(seq)
+
+    # bases={"A","C","G","T"}
+
+    # # If this is not a DNA sequence, convert it 
+    # if not set(seq).issubset(bases):
+    #     seq_obj = seq_obj.translate()
+    
+    return biopython_seq_from_str(seq)
+
+def biopython_seq_from_str(str_seq):
+    #make it a biopython sequence for processing later
+    seq_obj = Seq(str_seq)
+
+    bases={"A","C","G","T"}
+
+    # If this is not a DNA sequence, convert it 
+    if not set(str_seq).issubset(bases):
+        seq_obj = convert_aa_to_dna(seq_obj._data)
+    
+    return seq_obj
+
+def convert_aa_to_dna(prot_seq, codon_library=CODON_TABLE_DNA):
+    dna_seq = ""
+    allowed_aas = list(codon_library.keys())
+    for aa in prot_seq.upper():
+        if aa in allowed_aas:
+            dna_seq += codon_library[aa][0] # select the first codon for the amino acid
+        else:
+            raise ValueError(f"Invalid amino acid: {aa}")
+    
+    return Seq(dna_seq)
 
 
 ### Helper functions for mutation_file_to_df ###
@@ -106,13 +138,15 @@ def get_allowed_codon_list(mutations_aa, original_codons):
     # to a list of codons
     for pos,allowed_aa_at_pos in enumerate(mutations_aa):
         allowed_codons_at_pos= list() #TODO: rename this variable
+        original_codon = original_codons[pos]
+        original_aa = CODON_TO_AMINO_ACID_DNA[original_codon]
     
         # Convert each AA in list to the first codon in the translation table
         for aa_mut in allowed_aa_at_pos:
-            allowed_codons_at_pos.append(CODON_TABLE_DNA[aa_mut][0])
+            if not aa_mut == original_aa: #Don't add mutation to list if it is the same as the original
+                allowed_codons_at_pos.append(CODON_TABLE_DNA[aa_mut][0])
 
         # Append list of allowed mutation codons and the original codon to output
-        original_codon = original_codons[pos]
         allowed_codons_at_pos.append(original_codon)
 
         final_allowed_codon_list = add_mixed_bases_and_combine(allowed_codons_at_pos)
@@ -129,12 +163,12 @@ def add_mixed_bases_and_combine(allowed_codons_at_pos):
         return allowed_codons_at_pos
     for i, curr_codon in enumerate(allowed_codons_at_pos[:-1]):
         curr_codon_mod, base_1_2 = check_leu_arg_ser(curr_codon)
-        print("current", curr_codon)
+        # print("current", curr_codon)
 
         # Compare beginning of current codon to those in the allowed codons list
         for j, match_codon in enumerate(allowed_codons_at_pos[i+1:]):
             match_codon_mod, match_first_two = check_leu_arg_ser(match_codon)
-            print("match", match_codon)
+            # print("match", match_codon)
 
             # If there is a match, find the mixed base that fits both codons
             if match_first_two == base_1_2: # add something for special cases: ARG (R) and LEU (L)
@@ -151,7 +185,6 @@ def add_mixed_bases_and_combine(allowed_codons_at_pos):
     return modifiable_allowed_codon_list 
 
 def get_mixed_base_codon(codonA, codonB):
-    print(codonA,codonB)
     base3_l = [codonA[-1],codonB[-1]]
     base3_l.sort()
     base3_joint_str = "".join(base3_l)
