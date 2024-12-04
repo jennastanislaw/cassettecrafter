@@ -1,0 +1,42 @@
+name: gga
+channels:
+  - defaults
+dependencies:
+  - defaults/osx-arm64::blas==1.0=openblas
+  - ca-certificates==2024.11.26
+  - defaults/osx-arm64::libcxx==14.0.6=h848a8c0_0
+  - defaults/osx-arm64::libffi==3.4.4=hca03da5_1
+  - defaults/osx-arm64::llvm-openmp==14.0.6=hc6e5704_0
+  - defaults/osx-arm64::ncurses==6.4=h313beb8_0
+  - defaults/noarch::tzdata==2024b=h04d1e81_0
+  - defaults/osx-arm64::xz==5.4.6=h80987f9_1
+  - defaults/osx-arm64::zlib==1.2.13=h18a0788_1
+  - defaults/osx-arm64::libgfortran5==11.3.0=h009349e_28
+  - defaults/osx-arm64::openssl==3.0.15=h80987f9_0
+  - defaults/osx-arm64::readline==8.2=h1a28f6b_0
+  - defaults/osx-arm64::tk==8.6.14=h6ba3021_0
+  - defaults/osx-arm64::libgfortran==5.0.0=11_3_0_hca03da5_28
+  - defaults/osx-arm64::sqlite==3.45.3=h80987f9_0
+  - defaults/osx-arm64::libopenblas==0.3.21=h269037a_0
+  - defaults/osx-arm64::python==3.9.20=hb885b13_1
+  - defaults/osx-arm64::exceptiongroup==1.2.0=py39hca03da5_0
+  - defaults/noarch::iniconfig==1.1.1=pyhd3eb1b0_0
+  - defaults/osx-arm64::numpy-base==1.26.4=py39ha9811e2_0
+  - defaults/osx-arm64::packaging==24.1=py39hca03da5_0
+  - defaults/osx-arm64::pluggy==1.0.0=py39hca03da5_1
+  - defaults/noarch::python-tzdata==2023.3=pyhd3eb1b0_0
+  - defaults/osx-arm64::pytz==2024.1=py39hca03da5_0
+  - defaults/osx-arm64::setuptools==75.1.0=py39hca03da5_0
+  - defaults/noarch::six==1.16.0=pyhd3eb1b0_1
+  - defaults/osx-arm64::tomli==2.0.1=py39hca03da5_0
+  - defaults/osx-arm64::wheel==0.44.0=py39hca03da5_0
+  - defaults/osx-arm64::numpy==1.26.4=py39h3b2db8e_0
+  - defaults/osx-arm64::pip==24.2=py39hca03da5_0
+  - anaconda/osx-arm64::pytest==7.4.4=py39hca03da5_0
+  - defaults/osx-arm64::python-dateutil==2.9.0post0=py39hca03da5_2
+  - defaults/osx-arm64::biopython==1.78=py39h1a28f6b_0
+  - defaults/osx-arm64::bottleneck==1.4.2=py39hbda83bc_0
+  - defaults/osx-arm64::numexpr==2.10.1=py39h5d9532f_0
+  - defaults/osx-arm64::pandas==2.2.2=py39h313beb8_0
+  - anaconda::flask
+prefix: /Users/jennastanislaw/miniconda/envs/gga
