@@ -15,6 +15,7 @@ Example: python3 src/main.py -m ./test_data/demo_mutation_list.csv
 
 import argparse
 import os
+import pandas as pd
 
 from process_inputs import process_inputs
 from generate_mutant_lib import generate_mutant_lib
@@ -61,8 +62,14 @@ def generate_assembly_library(gene_file, mutations, enzyme_name, min_oligo_size,
 # 2. Process inputs
     name, starting_dna, mutations_df = process_inputs(gene_file,mutations)
 
+
 # 3. Generate library of mutant sequences
     library_df = generate_mutant_lib(starting_dna,mutations_df, name)
+
+    #this needs to be removed, along with pandas import
+    library_df['DNA'] = (library_df['DNA'].str.replace(r"b'|b\"|'|\"", '', regex=True)  # Remove b', b", ', and "
+    .str.replace(r'\s+', '', regex=True)          # Remove extra spaces, if any
+)
 
 # 4. Replace any unwanted enzyme sites
 ## This is going to make the naming of the sequences weird, will need to fix this
@@ -89,7 +96,7 @@ def generate_assembly_library(gene_file, mutations, enzyme_name, min_oligo_size,
 
     final_df = process_dna_sequences(cassettes_df, enzyme, min_oligo_size)
 
-    # print(final_df)
+    print(final_df) # export to csv in a way that pushes to the website
 
     return final_df
 

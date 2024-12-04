@@ -56,7 +56,7 @@ def find_constant_indices(reference, sequences):
     return sorted(conserved_indices)
 
 
-def find_starts_of_consecutive_indices(conserved_indices, consecutive_count=4):
+def find_starts_of_consecutive_indices(conserved_indices, consecutive_count):
     """
     Finds the indices in the conserved index list that are the start of a specified number
     of consecutive conserved indices.

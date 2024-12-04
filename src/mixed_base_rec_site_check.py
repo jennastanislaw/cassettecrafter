@@ -1,11 +1,7 @@
-from mixed_base_rec_site_check_utils import expand_dna_sequence
+from mixed_base_rec_site_check_utils import expand_dna_sequence, check_recognition_sites_in_expanded_sequences, \
+    append_valid_sequences
 from mixed_base_rec_site_check_utils import find_non_canonical_bases
-from mixed_base_rec_site_check_utils import check_non_canonical_in_rec_sites
 
-
-from enzyme_site_replacement_utils import find_matching_sites
-from enzyme_site_replacement_utils import load_enzymes_from_csv
-from enzyme_site_replacement_utils import create_enzyme_dict
 
 import pandas as pd
 
@@ -23,7 +19,7 @@ def degen_codon_checker(df, enzyme):
     """
     # Create a list to collect new rows
     new_rows = []
-
+    test = enzyme.fwd_recognition_site
     # Iterate over each row in the DataFrame
     for index, row in df.iterrows():
         seq = row['DNA']
@@ -37,19 +33,12 @@ def degen_codon_checker(df, enzyme):
             # Expand sequences based on non-canonical bases
             expanded_sequence_list = expand_dna_sequence(seq)
 
-            # Check for recognition sites in expanded sequences
-            rec_sites = []
-            for seq2 in expanded_sequence_list:
-                fwd, rev = find_matching_sites(enzyme, seq2)
-                rec_sites.append(check_non_canonical_in_rec_sites(indices, fwd, rev, enzyme.OH_length))
+            # Check recognition sites in expanded sequences
+            rec_sites = check_recognition_sites_in_expanded_sequences(indices, expanded_sequence_list, enzyme)
 
-            # If any recognition site issues, append expanded sequences as new rows
-            if any(rec_sites):
-                for expanded_seq in expanded_sequence_list:
-                    new_rows.append({'name': name, 'DNA': seq, 'valid_mixed_bases': expanded_seq})
-            else:
-                # If no non-standard bases, add the original sequence as a valid sequence
-                new_rows.append({'name': name, 'DNA': seq, 'valid_mixed_bases': seq})
+            # Append valid sequences to new rows
+            append_valid_sequences(name, seq, expanded_sequence_list, rec_sites, new_rows)
+
         else:
             # If no non-standard bases, add the original sequence as a valid sequence
             new_rows.append({'name': name, 'DNA': seq, 'valid_mixed_bases': seq})
@@ -58,19 +47,3 @@ def degen_codon_checker(df, enzyme):
     updated_df = pd.DataFrame(new_rows)
 
     return updated_df
-
-# Example DataFrame
-data = {
-    'name': ['seq1', 'seq2', 'seq3'],
-    'DNA': ['ATGCN', 'ATGCGTAC', 'ACGTAGAAGRCGCTAG']
-}
-
-df = pd.DataFrame(data)
-
-enzyme_class_objs = load_enzymes_from_csv('/Users/siobhan/PycharmProjects/cassettecrafter/src/data/enzyme_sites.csv')
-
-enzyme_dict = create_enzyme_dict(enzyme_class_objs)
-
-enzyme = enzyme_dict.get('BbsI')
-
-print(degen_codon_checker(df, enzyme))
