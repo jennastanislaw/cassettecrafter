@@ -75,8 +75,8 @@ def mutation_file_to_df(mutations, og_seq_dna):
     mutation_df["original"] = og_aa
     mutation_df["codons_original"] = og_codon
 
-    mutation_df["allowed"] = mutation_df["mut_list"] + [mutation_df["original"]]
-
+    #mutation_df["allowed"] = mutation_df["mut_list"] + [mutation_df["original"]]
+    mutation_df["allowed"] = mutation_df.apply(lambda row: row['mut_list'] + [row['original']], axis=1)
     # Add current codons and allowed codons (selecting the first one on the list)
     mutation_df["codons_allowed"] = get_allowed_codon_list(mutation_df["mut_list"].tolist(),
                                      mutation_df["codons_original"].tolist())
