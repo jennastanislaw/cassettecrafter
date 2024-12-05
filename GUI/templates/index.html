@@ -1,15 +1,16 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sequence Optimizer</title>
+    <title>Golden Gate Cassette Generator</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Source+Sans+Pro:wght@400;600&display=swap" rel="stylesheet">
     <style>
         /* General Styles */
         body {
-            background-color: #f4f4f4; /* Light ivory background */
-            color: #333333; /* Charcoal text */
+            background-color: #f4f4f4;
+            color: #333333;
             font-family: 'Source Sans Pro', sans-serif;
             margin: 0;
             padding: 0;
@@ -18,15 +19,15 @@
         .header {
             text-align: center;
             padding: 30px 20px;
-            background-color: #2c3e50; /* Charcoal background */
-            color: #f4f4f4; /* Ivory text */
-        }
-        
-        .header h1 {
-            color: #d4af37; /* Gold text for the main header */
+            background-color: #2c3e50;
+            color: #f4f4f4;
         }
 
-        h1, h2, h3, h4, h5, h6 {
+        .header h1 {
+            color: #d4af37;
+        }
+
+        h1, h2 {
             font-family: 'Playfair Display', serif;
             margin: 10px 0;
         }
@@ -47,30 +48,25 @@
             max-width: 800px;
         }
 
-        ol li {
-            margin-bottom: 10px;
-            font-size: 1em;
-        }
-
         label {
             display: block;
             margin-top: 15px;
             font-weight: 600;
         }
 
-        input {
+        input, select {
             margin-top: 5px;
             padding: 10px;
             width: calc(100% - 20px);
-            border: 1px solid #cccccc; /* Light grey border */
+            border: 1px solid #cccccc;
             border-radius: 5px;
             box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.1);
             font-size: 1em;
         }
 
         button {
-            background-color: #d4af37; /* Gold button */
-            color: #ffffff; /* White text */
+            background-color: #d4af37;
+            color: #ffffff;
             border: none;
             padding: 12px 25px;
             cursor: pointer;
@@ -81,7 +77,7 @@
         }
 
         button:hover {
-            background-color: #b8860b; /* Darker gold on hover */
+            background-color: #b8860b;
         }
 
         .container {
@@ -101,27 +97,48 @@
     </style>
 </head>
 <body>
+    <div style="position: fixed; top: 20px; right: 20px; background: #2c3e50; padding: 15px; border-radius: 5px;">
+        <a href="/gg_assembly" style="color: #d4af37; text-decoration: none; font-weight: bold;">What is Golden Gate Assembly?</a>
+    </div>
+    
     <div class="header">
-        <h1>Golden Gate Assembly Optimizer</h1>
-        <p>This web application will optimize the order of specific plasmid cassettes for Golden Gate Assembly.</p>
+        <h1>Golden Gate Cassette Generator</h1>
+        <p>This web application optimizes plasmid sequences for Golden Gate Assembly.</p>
         <p>Created by: Jenna Stanislaw, Siobahn Kells, Anna Boerman, and Carolina Valderrama Hincapie</p>
         <p>Affiliation: University of Colorado Boulder</p>
     </div>
     <div class="container">
-        <h2>Sequence Optimizer Instructions</h2>
+        <h2>Instructions</h2>
         <ol>
-            <li>Enter your <strong>Backbone Sequence</strong> in the first input box.</li>
-            <li>Enter your <strong>Protein Sequence</strong> in the second input box.</li>
-            <li>Ensure each sequence contains only the letters <em>a, g, t,</em> and <em>c</em> (case insensitive).</li>
-            <li>Click the <strong>"Optimize"</strong> button to process the sequences.</li>
-            <li>Review the results displayed after optimization.</li>
+            <li>Ensure each sequence contains only the letters <em>A, G, T,</em> and <em>C</em> (case insensitive).</li>
+            <li>Upload a <strong>Gene Sequence</strong> file (CSV/FASTA format).</li>
+            <li>Upload a <strong>Mutation File</strong> (CSV format).</li>
+            <li>Select your <strong>Enzyme Name</strong> from the dropdown menu.</li>
+            <li>Set the <strong>Minimum Oligo Size</strong> and <strong>Maximum Oligo Size</strong> (numbers only).</li>
+            <li>Click <strong>"Optimize"</strong> to process the sequences.</li>
+            <li>Download the results from the next page.</li>
         </ol>
-        <form action="{{ url_for('optimize') }}" method="post">
-            <label for="backbone">Backbone Sequence:</label>
-            <input type="text" id="backbone" name="backbone" required>
-            <br>
-            <label for="protein">Protein Sequence:</label>
-            <input type="text" id="protein" name="protein" required>
+        <form action="{{ url_for('optimize') }}" method="post" enctype="multipart/form-data">
+            <label for="gene_file">Gene Sequence File (CSV/FASTA):</label>
+            <input type="file" id="gene_file" name="gene_file" accept=".csv, .fasta" required>
+
+            <label for="mutations_file">Mutation File (CSV):</label>
+            <input type="file" id="mutations_file" name="mutations_file" accept=".csv" required>
+
+            <label for="enzyme_name">Enzyme Name:</label>
+            <select id="enzyme_name" name="enzyme_name">
+                <option value="BbsI" selected>BbsI</option>
+                <option value="BsaI">BsaI</option>
+                <option value="Esp3I">Esp3I</option>
+                <option value="BsmBI">BsmBI</option>
+            </select>
+
+            <label for="min_oligo_size">Minimum Oligo Size:</label>
+            <input type="number" id="min_oligo_size" name="min_oligo_size" min="10" value="20" required>
+
+            <label for="max_oligo_size">Maximum Oligo Size:</label>
+            <input type="number" id="max_oligo_size" name="max_oligo_size" min="10" value="100" required>
+            
             <br>
             <button type="submit">Optimize</button>
         </form>
@@ -131,4 +148,3 @@
     </footer>
 </body>
 </html>
-
