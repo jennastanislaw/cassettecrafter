@@ -18,10 +18,11 @@ def process_inputs(gene,mutations):
     # Check if gene input is a file or a string
 
     if os.path.isfile(gene):
-        name, starting_dna = read_gene_input_from_file(gene)
+        name, starting_dna_str = read_gene_input_from_file(gene)
     else:
         name = "gene1" #TODO: fill this with something else instead
-        starting_dna = biopython_seq_from_str(gene)
+        starting_dna_str = gene
+    starting_dna = biopython_seq_from_str(gene)
 
     # TODO add some checks on the input in above function
 

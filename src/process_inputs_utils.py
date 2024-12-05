@@ -42,37 +42,66 @@ def get_seq(lines,filetype):
         BioPython Seq: Seq object containing information about the original DNA 
             sequence of the gene
     """
+
     if filetype == "csv":
+        # If file is csv, seq should be in second column. Assuming no header
         seq=lines[0].split(",")[-1].strip()
     elif filetype == "fa":
+        # If file is fasta, first line will contain information
+        # all consecutive lines should contain sequence, but the 
+        # sequence may be split over multiple lines
         seq=""
         for line in lines[1:]:
             seq+=line.strip()
 
-    #make it a biopython sequence for processing later
-    # seq_obj = Seq(seq)
-
-    # bases={"A","C","G","T"}
-
-    # # If this is not a DNA sequence, convert it 
-    # if not set(seq).issubset(bases):
-    #     seq_obj = seq_obj.translate()
-    
-    return biopython_seq_from_str(seq)
+    return seq
 
 def biopython_seq_from_str(str_seq):
+    """Accepts an amino acid or DNA sequence and converts it to a BipPython
+        Seq object. If this is an amino acid sequence, it will first be 
+        reverse transcribed in DNA (see convert_aa_to_dna for more details) 
+
+    Args:
+        str_seq (str): amino acid or DNA sequence 
+
+    Returns:
+        BioPython Seq object : the input sequence as BioPython Seq object
+    """
+    assert type(str_seq) == str, f"The sequence much be a string, not a(n) {type(str_seq).__name__}"
+    
     #make it a biopython sequence for processing later
+    str_seq = str_seq.upper()
     seq_obj = Seq(str_seq)
 
     bases={"A","C","G","T"}
 
     # If this is not a DNA sequence, convert it 
     if not set(str_seq).issubset(bases):
-        seq_obj = convert_aa_to_dna(seq_obj._data)
+        dna_seq = convert_aa_to_dna(seq_obj._data)
+        seq_obj = Seq(dna_seq)
     
     return seq_obj
 
 def convert_aa_to_dna(prot_seq, codon_library=CODON_TABLE_DNA):
+    """Converts and amino acid string to a DNA sequence composed of codons that
+        correspond to the correct amino acid. The codons are selected by the 
+        first corresponding item in the codon library.
+
+    Args:
+        prot_seq (str): string of amino acids, using the one-letter code
+        codon_library (dictionary, optional): Pre-defined dictionary mapping
+            amino acid keys to a list of possible codons. The first element in
+            each list will be the codon used in the sequence that is returned.
+            Defaults to CODON_TABLE_DNA.
+
+    Raises:
+        ValueError: if amino acid is invalid (not one of the 20 canonical AAs)
+
+    Returns:
+        str : the converted DNA sequence
+    """
+    assert type(prot_seq) == str, f"The sequence much be a string, not a(n) {type(prot_seq).__name__}"
+    
     dna_seq = ""
     allowed_aas = list(codon_library.keys())
     for aa in prot_seq.upper():
@@ -81,8 +110,7 @@ def convert_aa_to_dna(prot_seq, codon_library=CODON_TABLE_DNA):
         else:
             raise ValueError(f"Invalid amino acid: {aa}")
     
-    return Seq(dna_seq)
-
+    return dna_seq
 
 ### Helper functions for mutation_file_to_df ###
 def gen_per_pos_muts(mutation_df):
@@ -96,7 +124,12 @@ def gen_per_pos_muts(mutation_df):
         dict: dictionary mapping indices of input dataframe to values in the column 
             labelled "allowed"
     """
-    # TODO: check that asserts df contains this column
+    columns = mutation_df.columns.tolist()
+    if "allowed" not in columns:
+        raise KeyError("Mutation csv must contain a column called 'allowed'," +
+                    "which contains a comma-separated list of possible mutations" + 
+                    "for each position")
+    
     mutation_dict = mutation_df.loc["allowed"].to_dict()
     return mutation_dict
 
