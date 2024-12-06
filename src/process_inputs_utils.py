@@ -125,12 +125,15 @@ def gen_per_pos_muts(mutation_df):
             labelled "allowed"
     """
     columns = mutation_df.columns.tolist()
+    print(columns)
+    print(mutation_df)
+
     if "allowed" not in columns:
         raise KeyError("Mutation csv must contain a column called 'allowed'," +
                     "which contains a comma-separated list of possible mutations" + 
                     "for each position")
     
-    mutation_dict = mutation_df.loc["allowed"].to_dict()
+    mutation_dict = mutation_df['allowed'].to_dict()
     return mutation_dict
 
 # Take comma separated list and return split list of strings

@@ -132,8 +132,8 @@ class TestGen_Per_Pos_Muts:
     def test_pass():
         input=pd.DataFrame({"indices":[1,2],
                             "allowed":[["A,C,D"],["F,G"]]})
-        correct_out={1:"A,C,D",
-                     2:"F,G"}
+        correct_out={1:["A,C,D"],
+                     2:["F,G"]}
         
         output= gen_per_pos_muts(input)
 

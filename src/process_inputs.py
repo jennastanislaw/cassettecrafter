@@ -22,7 +22,7 @@ def process_inputs(gene,mutations):
     else:
         name = "gene1" #TODO: fill this with something else instead
         starting_dna_str = gene
-    starting_dna = biopython_seq_from_str(gene)
+    starting_dna = biopython_seq_from_str(starting_dna_str)
 
     # TODO add some checks on the input in above function
 
@@ -87,6 +87,7 @@ def mutation_file_to_df(mutations, og_seq_dna):
 
     # mutation_df["allowed"] = mutation_df["mut_list"] + [mutation_df["original"]]
     mutation_df["allowed"] = mutation_df.apply(lambda row: row['mut_list'] + [row['original']], axis=1)
+    # print(mutation_df)
 
     # Add current codons and allowed codons (selecting the first one on the list)
     mutation_df["codons_allowed"] = get_allowed_codon_list(mutation_df["mut_list"].tolist(),
