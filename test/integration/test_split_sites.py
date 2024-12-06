@@ -190,6 +190,8 @@ class TestFindValidCombinations:
         expected_result = [9]  # Change to reflect the first valid combination
         assert result == expected_result, f"Expected {expected_result}, but got {result}"
 
+
+
     def test_no_valid_combinations(self):
         """Test when no valid combinations exist."""
         reference = "ATGCGTACGTAGCTAGC"
