@@ -29,20 +29,18 @@ def check_random_oligo_for_sites(DNA, enzyme):
 
 
 # append end regions to all sequences
-def add_end_restriction_sites(df, enzyme_fp, enzyme, min_oligo_size):
+def add_end_restriction_sites(df, column, enzyme):
 
     """Add forward enzyme recognition site at the beginning and reverse recognition site at the end of each DNA sequence in the DataFrame."""
+
+    # need to deal with spacer base length, also make sure that this variable is being used correctly everywhere else
 
     # Extract the forward and reverse recognition sites
     fwd_recognition_site = enzyme.fwd_recognition_site
     rev_recognition_site = enzyme.rev_recognition_site
 
-    # Ensure that the 'DNA' column exists in the DataFrame
-    if 'DNA' not in df.columns:
-        raise ValueError("DataFrame must contain a 'DNA' column.")
-
     # Update each row in the DataFrame
-    df['Modified_DNA'] = df['DNA'].apply(lambda dna: fwd_recognition_site + dna + rev_recognition_site)
+    df[column] = df[column].apply(lambda dna: fwd_recognition_site + dna + rev_recognition_site)
 
     return df
 
@@ -55,20 +53,20 @@ def generate_siteless_sequence(n, enzyme):
         if check_random_oligo_for_sites(random_oligo, enzyme):
             return random_oligo
 
-def ensure_minimum_length(df, min_oligo_size, enzyme_name):
+def ensure_minimum_length(df, col, min_oligo_size, enzyme):
     """Ensure that each 'Modified DNA' sequence meets the minimum length requirement."""
     for index, row in df.iterrows():
-        modified_dna = row['Modified_DNA']
+        modified_dna = row[col]
         current_length = len(modified_dna)
 
         # Calculate how many bases to add
         bases_to_add = max(np.floor((min_oligo_size - current_length)/2), 6)  # Ensure at least 6 bases are added
-        random_bases1 = generate_siteless_sequence(bases_to_add, enzyme_name) # generate separate random sequences to meet
+        random_bases1 = generate_siteless_sequence(bases_to_add, enzyme) # generate separate random sequences to meet
         # sequence complexity requirements
 
-        random_bases2 = generate_siteless_sequence(bases_to_add, enzyme_name)
+        random_bases2 = generate_siteless_sequence(bases_to_add, enzyme)
         # Append the random bases to the 'Modified DNA'
-        df.at[index, 'Modified_DNA'] = random_bases1 + modified_dna + random_bases2
+        df.at[index, col] = random_bases1 + modified_dna + random_bases2
 
     return df
 

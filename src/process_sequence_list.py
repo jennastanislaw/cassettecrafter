@@ -4,7 +4,7 @@ from enzyme_site_replacement import replace_enzyme_site
 import enzyme_site_replacement_utils
 from process_sequence_list_utils import add_end_restriction_sites, ensure_minimum_length
 
-def replace_enzyme_sites_in_dataframe(df, enzyme_fp, enzyme_name):
+def replace_enzyme_sites_in_dataframe(df, enzyme_fp, enzyme_name): # not sure if I need this anymore?
     """
     Replace enzyme sites in the DNA sequences located in the 'DNA' column of the DataFrame.
 
@@ -36,22 +36,20 @@ def replace_enzyme_sites_in_dataframe(df, enzyme_fp, enzyme_name):
     return df
 
 
-def process_dna_sequences(df, enzyme_fp, enzyme_name, min_oligo_size):
+def process_dna_sequences(df, enzyme, min_oligo_size):
     """
     Runs the sequence of functions to add restriction sites to each DNA sequence,
     ensures each modified sequence meets the minimum oligo size,
     and generates random oligos if necessary.
     """
     # Step 1: Add enzyme recognition sites
-    enzyme_class_objs = enzyme_site_replacement_utils.load_enzymes_from_csv(enzyme_fp)
-    enzyme_dict = enzyme_site_replacement_utils.create_enzyme_dict(enzyme_class_objs)
+    cassette_columns = [col for col in df.columns if col.startswith('Cassette')]
 
-    enzyme = enzyme_dict.get(enzyme_name)
+    for col in cassette_columns:
+        df = add_end_restriction_sites(df, col, enzyme)
 
-    df = add_end_restriction_sites(df, enzyme_fp, enzyme, min_oligo_size)
-
-    # Step 2: Ensure minimum length for each sequence
-    df = ensure_minimum_length(df, min_oligo_size, enzyme)
+        # Step 2: Ensure minimum length for each sequence
+        df = ensure_minimum_length(df, col, min_oligo_size, enzyme)
 
     return df
 

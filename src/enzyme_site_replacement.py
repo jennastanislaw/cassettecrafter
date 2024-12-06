@@ -1,16 +1,16 @@
 # take a sequence and an enzyme and find cut sites
 import enzyme_site_replacement_utils
 
-def replace_enzyme_site(enzyme_fp, enzyme_name, DNA):
+def remove_enzyme_sites(enzyme, DNA_df):
 
-    enzyme_class_objs = enzyme_site_replacement_utils.load_enzymes_from_csv(enzyme_fp)
-    enzyme_dict = enzyme_site_replacement_utils.create_enzyme_dict(enzyme_class_objs)
+    DNA_df['rec_sites_removed'] = DNA_df['valid_mixed_bases'].apply(lambda dna: replace_enzyme_site(enzyme, dna))
 
-    enzyme = enzyme_dict.get(enzyme_name)
+    return DNA_df
 
-    # Add this check to raise KeyError for invalid enzyme names
-    if enzyme is None:
-        raise KeyError(f"Enzyme '{enzyme_name}' not found.")
+
+def replace_enzyme_site(enzyme, DNA):
+
+    # Add this check to raise KeyError for invalid enzyme name
 
     DNA_rec_sites_rem = list(DNA)
 
@@ -58,3 +58,6 @@ def replace_enzyme_site(enzyme_fp, enzyme_name, DNA):
     new_DNA=''.join(DNA_rec_sites_rem)
 
     return new_DNA
+
+# testing - remove later
+#replace_enzyme_site('/Users/siobhan/PycharmProjects/cassettecrafter/src/data/enzyme_sites.csv', 'BbsI', 'GAAGACAAAAAAGGGGGGVAAAGGGGG')
