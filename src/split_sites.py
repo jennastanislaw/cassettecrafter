@@ -101,31 +101,31 @@ def calculate_hamming_distances(split_indices, reference, OH_len):
     return hamming_distances
 
 
-enzyme_class_objs = load_enzymes_from_csv('/Users/siobhan/PycharmProjects/cassettecrafter/src/data/enzyme_sites.csv')
-
-enzyme_dict = create_enzyme_dict(enzyme_class_objs)
-
-enzyme = enzyme_dict.get('BbsI')
-
-# Example DataFrame
-data = {'rec_sites_removed': ['ATGCGAATTCATCGGGAATTCGCGTGAATTC', 'AAGTCGAATTCGGTTAAGTCGAATTC']}
-DNA_df = pd.DataFrame(data)
-
-# Example split_sites list
-split_sites = [0, 5, 10, 15, 20]
-
-# Generate cassettes
-generate_cassettes(DNA_df, split_sites, enzyme)
-
-print(DNA_df)
-
-# Example usage
-reference = "AGAGGTGATGAAGTCAGACAAATCGCTCCAGGGCAAACTGGAAAGATTGCTGATTATAA"
-sequences = [
-    "AGAGGTGATGAAGGCAGACAAATCGCTCCAGGGCAAACTGGAAAGACTGCTGATTATAA",
-    "TGAGGTGATGAAGTCAGACAAATCGCTCCAGGGCAAACTGGAAAGATTGCTGATTATAC",
-    "AGAGGTGATGAAGTCAGACAAATCGCTCCAGGGCAAACTGGAAAGATTGCTGATTATAA"
-]
+# enzyme_class_objs = load_enzymes_from_csv('/Users/siobhan/PycharmProjects/cassettecrafter/src/data/enzyme_sites.csv')
+#
+# enzyme_dict = create_enzyme_dict(enzyme_class_objs)
+#
+# enzyme = enzyme_dict.get('BbsI')
+#
+# # Example DataFrame
+# data = {'rec_sites_removed': ['ATGCGAATTCATCGGGAATTCGCGTGAATTC', 'AAGTCGAATTCGGTTAAGTCGAATTC']}
+# DNA_df = pd.DataFrame(data)
+#
+# # Example split_sites list
+# split_sites = [0, 5, 10, 15, 20]
+#
+# # Generate cassettes
+# generate_cassettes(DNA_df, split_sites, enzyme)
+#
+# print(DNA_df)
+#
+# # Example usage
+# reference = "AGAGGTGATGAAGTCAGACAAATCGCTCCAGGGCAAACTGGAAAGATTGCTGATTATAA"
+# sequences = [
+#     "AGAGGTGATGAAGGCAGACAAATCGCTCCAGGGCAAACTGGAAAGACTGCTGATTATAA",
+#     "TGAGGTGATGAAGTCAGACAAATCGCTCCAGGGCAAACTGGAAAGATTGCTGATTATAC",
+#     "AGAGGTGATGAAGTCAGACAAATCGCTCCAGGGCAAACTGGAAAGATTGCTGATTATAA"
+# ]
 
 
 
