@@ -14,7 +14,7 @@ def process_inputs(gene_file,mutations):
         tuple (name, starting_dna, mutations_df): tuple with gene name, initial 
                 gene sequence, and pandas DataFrame with mutation information
     """
-    name, starting_dna = read_input(gene_file)
+    name, starting_dna = read_dna_input(gene_file)
     # TODO add some checks on the input in above function
 
     mutations_df = mutation_file_to_df(mutations, starting_dna)
@@ -23,7 +23,7 @@ def process_inputs(gene_file,mutations):
 
 
 ### Helper functions for process_inputs - sub-function read_input ###
-def read_input(file):
+def read_dna_input(file):
     """Extract gene name and sequence from input file
 
     Args:
@@ -75,10 +75,13 @@ def mutation_file_to_df(mutations, og_seq_dna):
     mutation_df["original"] = og_aa
     mutation_df["codons_original"] = og_codon
 
-    mutation_df["allowed"] = mutation_df["mut_list"] + [mutation_df["original"]]
+    # mutation_df["allowed"] = mutation_df["mut_list"] + [mutation_df["original"]]
+    mutation_df["allowed"] = mutation_df.apply(lambda row: row['mut_list'] + [row['original']], axis=1)
 
     # Add current codons and allowed codons (selecting the first one on the list)
     mutation_df["codons_allowed"] = get_allowed_codon_list(mutation_df["mut_list"].tolist(),
                                      mutation_df["codons_original"].tolist())
+    
+    print( mutation_df)
 
     return mutation_df

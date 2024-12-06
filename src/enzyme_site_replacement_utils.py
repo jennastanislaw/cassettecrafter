@@ -50,6 +50,8 @@ def find_matching_sites(enzyme, dna_sequence):
     fwd_site_length = len(enzyme.fwd_recognition_site)
     rev_site_length = len(enzyme.rev_recognition_site)
 
+    test = enzyme.fwd_recognition_site
+
     for i in range(len(dna_sequence) - fwd_site_length + 1):
         if dna_sequence[i:i + fwd_site_length] == enzyme.fwd_recognition_site:
             fwd_matches.append(i)

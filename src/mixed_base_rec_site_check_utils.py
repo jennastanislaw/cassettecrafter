@@ -1,6 +1,8 @@
 
 from itertools import product
 
+from src.enzyme_site_replacement_utils import find_matching_sites
+
 # A dictionary mapping IUPAC codes to possible base sets
 IUPAC_to_bases = {
     'A': ['A'],
@@ -54,7 +56,7 @@ def find_non_canonical_bases(sequence):
         list: A list of tuples where each tuple contains the index and the non-canonical base.
     """
     non_canonical_indices = [
-        (idx, base) for idx, base in enumerate(sequence) if base not in "ACGT"
+        (idx, base) for idx, base in enumerate(sequence) if base.upper() not in "ACGT"
     ]
     return non_canonical_indices
 
@@ -73,10 +75,32 @@ def check_non_canonical_in_rec_sites(indices, fwd_sites, rev_sites, enzyme_oh_le
     """
     for idx, base in indices:
         for site in fwd_sites + rev_sites:  # Combine forward and reverse sites
-            site_range = range(site, site + enzyme_oh_length+1)
+            site_range = range(site, site + enzyme_oh_length)
 
             if idx in site_range:
                 print(f"Non-canonical base '{base}' at index {idx} contributes to a recognition site at {site}.")
                 return True  # Return True immediately upon finding an overlap
 
     return False  # Return False if no overlap is found
+
+def check_recognition_sites_in_expanded_sequences(indices, expanded_sequences, enzyme):
+    """
+    Check if any non-canonical base in the expanded sequences overlaps with enzyme recognition sites.
+    """
+    test = enzyme.fwd_recognition_site
+
+    rec_sites = []
+    for seq in expanded_sequences:
+        fwd, rev = find_matching_sites(enzyme, seq)
+        rec_sites.append(check_non_canonical_in_rec_sites(indices, fwd, rev, len(enzyme.fwd_recognition_site)))
+    return rec_sites
+
+def append_valid_sequences(name, seq, expanded_sequences, rec_sites, new_rows):
+    """
+    Append sequences with valid recognition sites and non-canonical base info to new rows.
+    """
+    if any(rec_sites):
+        for expanded_seq in expanded_sequences:
+            new_rows.append({'name': name, 'DNA': seq, 'valid_mixed_bases': expanded_seq})
+    else:
+        new_rows.append({'name': name, 'DNA': seq, 'valid_mixed_bases': seq})
