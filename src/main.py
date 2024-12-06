@@ -14,7 +14,11 @@ Example: python3 src/main.py -m ./test_data/demo_mutation_list.csv
 """
 
 import argparse
+<<<<<<< HEAD
 import os 
+=======
+import os
+>>>>>>> af1e04e2be3273ea66932b5846a479874f573998
 import pandas as pd
 
 from process_inputs import process_inputs
@@ -23,7 +27,9 @@ from process_sequence_list import process_dna_sequences
 from enzyme_site_replacement_utils import (load_enzymes_from_csv, create_enzyme_dict)
 from mixed_base_rec_site_check import degen_codon_checker
 from enzyme_site_replacement import remove_enzyme_sites
-from split_sites import (find_split_indices, generate_cassettes)
+from split_sites import (find_split_indices)
+from src.split_sites_utils import generate_cassettes
+
 
 # to include in global variable file:
 # enzyme_data
@@ -62,8 +68,14 @@ def generate_assembly_library(gene_file, mutations, enzyme_name, min_oligo_size,
 # 2. Process inputs
     name, starting_dna, mutations_df = process_inputs(gene_file,mutations)
 
+
 # 3. Generate library of mutant sequences
     library_df = generate_mutant_lib(starting_dna,mutations_df, name)
+
+    #this needs to be removed, along with pandas import
+    library_df['DNA'] = (library_df['DNA'].str.replace(r"b'|b\"|'|\"", '', regex=True)  # Remove b', b", ', and "
+    .str.replace(r'\s+', '', regex=True)          # Remove extra spaces, if any
+)
 
 # 4. Replace any unwanted enzyme sites
 ## This is going to make the naming of the sequences weird, will need to fix this
@@ -84,13 +96,13 @@ def generate_assembly_library(gene_file, mutations, enzyme_name, min_oligo_size,
     split_sites = find_split_indices(reference, sequences, min_oligo_size, max_oligo_size, enzyme)
 
 # 6 generate cassettes
-    cassettes_df = generate_cassettes(rec_sites_removed, split_sites)
+    cassettes_df = generate_cassettes(rec_sites_removed, split_sites, enzyme)
 
     # 7. Final sequence processing (add terminal enzyme sites and extra bases if needed)
 
     final_df = process_dna_sequences(cassettes_df, enzyme, min_oligo_size)
 
-    # print(final_df)
+    print(final_df) # export to csv in a way that pushes to the website
 
     return final_df
 
@@ -124,5 +136,23 @@ def parseargs():
 
 if __name__ == "__main__":
     args=parseargs()
+<<<<<<< HEAD
     # Main function
     generate_assembly_library(args.gene_file, args.mutations, args.enzyme_name, args.min_oligo_size, args.max_oligo_size)
+=======
+    #Main function
+    generate_assembly_library(args.gene_file, args.mutations, args.enzyme_name, args.min_oligo_size, args.max_oligo_size)
+
+
+    # # Uncomment this line to run with hardcoded arguments for testing
+    # final_result = generate_assembly_library(
+    #     gene_file="/Users/siobhan/PycharmProjects/cassettecrafter/test_data/LY011_test_seq_single.csv",
+    #     mutations="/Users/siobhan/PycharmProjects/cassettecrafter/test_data/demo_mutation_list.csv",
+    #     enzyme_name="BbsI",
+    #     min_oligo_size=20,
+    #     max_oligo_size=100
+    # )
+
+    # # Print or process the final result if needed
+    # print(final_result)
+>>>>>>> af1e04e2be3273ea66932b5846a479874f573998

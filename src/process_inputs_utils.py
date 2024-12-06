@@ -1,6 +1,7 @@
-import sys
+# import sys
+import copy
 from Bio.Seq import Seq
-from dna_aa_definitions import CODON_TABLE_DNA
+from dna_aa_definitions import CODON_TABLE_DNA, CODON_TO_AMINO_ACID_DNA, MIXED_BASES, MIXED_BASES_COMBO_TO_BASE
 
 ### Helper functions for read_input ###
 # Get name from te fasta or csv
@@ -22,6 +23,7 @@ def get_gene_name(lines,filetype):
     elif filetype == "fa" or filetype == "fasta":
         name=lines[0].replace(">","")
     else:
+        # return None
         raise ValueError(f"Filetype {filetype} is not allowed. Valid input file types are csv or fa")
 
     #remove extra characters if needed
@@ -29,7 +31,7 @@ def get_gene_name(lines,filetype):
 
 # Read in the seq from the file
 def get_dna_seq(lines,filetype):
-    """Get gene name from the first column of csv, or the first line of a fasta
+    """Get DNA sequence from the second column of csv, or the remaining lines (lines after name) of a fasta
 
     Args:
         lines (list): list of strings corresponding to lines in an input file
@@ -80,7 +82,7 @@ def split_csl(csl):
     Returns:
         list: list of strings
     """
-    return [val.strip() for val in csl.split(",")]
+    return list(val.strip() for val in csl.split(","))
 
 def get_allowed_codon_list(mutations_aa, original_codons):
     """Convert amino acid information to codon information for each of the
@@ -101,17 +103,78 @@ def get_allowed_codon_list(mutations_aa, original_codons):
     output=list()
 
     # For each positions's possible mutations, convert the list of amino acids
-    # to a list of codon
+    # to a list of codons
     for pos,allowed_aa_at_pos in enumerate(mutations_aa):
-        output_pos= list()
+        allowed_codons_at_pos= list() #TODO: rename this variable
     
         # Convert each AA in list to the first codon in the translation table
         for aa_mut in allowed_aa_at_pos:
-            output_pos.append(CODON_TABLE_DNA[aa_mut][0])
-        
+            allowed_codons_at_pos.append(CODON_TABLE_DNA[aa_mut][0])
+
         # Append list of allowed mutation codons and the original codon to output
         original_codon = original_codons[pos]
-        output_pos.append(original_codon)
-        output.append(output_pos)
+        allowed_codons_at_pos.append(original_codon)
+
+        final_allowed_codon_list = add_mixed_bases_and_combine(allowed_codons_at_pos)
+        output.append(final_allowed_codon_list)
 
     return output
+
+# fxn to combine any AA with shared first 2 bases
+def add_mixed_bases_and_combine(allowed_codons_at_pos):
+    modifiable_allowed_codon_list = copy.deepcopy(allowed_codons_at_pos)
+    #TODO: add check of length of mutation list
+
+    if len(allowed_codons_at_pos) < 1:
+        return allowed_codons_at_pos
+    for i, curr_codon in enumerate(allowed_codons_at_pos[:-1]):
+        curr_codon_mod, base_1_2 = check_leu_arg_ser(curr_codon)
+        print("current", curr_codon)
+
+        # Compare beginning of current codon to those in the allowed codons list
+        for j, match_codon in enumerate(allowed_codons_at_pos[i+1:]):
+            match_codon_mod, match_first_two = check_leu_arg_ser(match_codon)
+            print("match", match_codon)
+
+            # If there is a match, find the mixed base that fits both codons
+            if match_first_two == base_1_2: # add something for special cases: ARG (R) and LEU (L)
+                mixed_base_codon = get_mixed_base_codon(curr_codon_mod, match_codon_mod)
+                if mixed_base_codon[:2] != base_1_2:
+                    mixed_base_codon = base_1_2 + mixed_base_codon[-1]
+
+                # Remove the two codons and replace with the mixed-base codon
+                modifiable_allowed_codon_list.remove(curr_codon)
+                modifiable_allowed_codon_list.remove(match_codon)
+                modifiable_allowed_codon_list.append(mixed_base_codon)
+
+                break #exit the inner loop, because no other matches could exist
+    return modifiable_allowed_codon_list 
+
+def get_mixed_base_codon(codonA, codonB):
+    print(codonA,codonB)
+    base3_l = [codonA[-1],codonB[-1]]
+    base3_l.sort()
+    base3_joint_str = "".join(base3_l)
+
+    # Access the 
+    base3_mixed = MIXED_BASES_COMBO_TO_BASE[base3_joint_str]
+
+    # Full codon with the third position as a mixed base
+    base12 = codonA[:2]
+    codon = base12 + base3_mixed
+
+    return codon
+
+def check_leu_arg_ser(codon):
+    # Assign the first possible codon with a possible match to another amino acid codon if the first two bases
+    codon_base_1_2 = codon[:2]
+    if codon_base_1_2 == "CT": # Leu
+        codon_base_1_2 = "TT"
+        codon = "TTA"
+    elif codon_base_1_2 == "CG": # Arg
+        codon_base_1_2 = "AG"
+        codon = "AGA"
+    elif codon_base_1_2 == "TC": # Ser
+        codon_base_1_2 = "AG"
+        codon = "AGC"
+    return codon, codon_base_1_2
