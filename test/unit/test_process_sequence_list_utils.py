@@ -63,7 +63,7 @@ class TestCheckRandomOligoForSites:
     @pytest.fixture
     def enzyme(self):
         """Create a test enzyme."""
-        return Enzyme("TestEnzyme", "GAATTC", "CTTAAG", 0, 6)
+        return Enzyme("TestEnzyme", "GAATTC", "CTTAAG", 0, 4)
 
     def test_check_random_oligo_with_no_sites(self, enzyme):
         """Test when the DNA has no recognition sites."""
@@ -375,3 +375,4 @@ class TestEnsureMinimumLength:
         assert len(result['Modified DNA'][0]) >= min_oligo_size
         assert len(result['Modified DNA'][1]) == 20  # No change for long enough sequence
         assert len(result['Modified DNA'][2]) >= min_oligo_size
+

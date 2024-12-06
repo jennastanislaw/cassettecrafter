@@ -21,9 +21,10 @@ def generate_random_dna(n):
 
     # Create a Biopython Seq object
     dna_sequence = Seq(random_sequence)
-
+    print(dna_sequence)
     return dna_sequence
 
+generate_random_dna(125)
 
 def check_random_oligo_for_sites(DNA, enzyme):
     fwd_matches, rev_matches = find_matching_sites(enzyme, DNA)

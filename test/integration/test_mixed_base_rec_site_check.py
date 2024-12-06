@@ -30,7 +30,7 @@ class TestReplaceEnzymeSite:
     @pytest.fixture
     def sample_enzyme_data(self):
         """Create a list of demo enzyme objects."""
-        EcoRI = Enzyme("EcoRI", "GAATTC", "CTTAAG", 0, 6)
+        EcoRI = Enzyme("EcoRI", "GAATTC", "CTTAAG", 0, 4)
         BamHI = Enzyme("BamHI", "GGATCC", "CCTAGG", 0, 6)
         FakeEnzyme = Enzyme("FakeEnzyme", "TGG", "TGG", 0, 3)
 

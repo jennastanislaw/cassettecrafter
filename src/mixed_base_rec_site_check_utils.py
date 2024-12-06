@@ -92,7 +92,7 @@ def check_recognition_sites_in_expanded_sequences(indices, expanded_sequences, e
     rec_sites = []
     for seq in expanded_sequences:
         fwd, rev = find_matching_sites(enzyme, seq)
-        rec_sites.append(check_non_canonical_in_rec_sites(indices, fwd, rev, enzyme.OH_length))
+        rec_sites.append(check_non_canonical_in_rec_sites(indices, fwd, rev, len(enzyme.fwd_recognition_site)))
     return rec_sites
 
 def append_valid_sequences(name, seq, expanded_sequences, rec_sites, new_rows):
