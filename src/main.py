@@ -14,7 +14,11 @@ Example: python3 src/main.py -m ./test_data/demo_mutation_list.csv
 """
 
 import argparse
+<<<<<<< HEAD
+import os 
+=======
 import os
+>>>>>>> af1e04e2be3273ea66932b5846a479874f573998
 import pandas as pd
 
 from process_inputs import process_inputs
@@ -133,6 +137,10 @@ def parseargs():
 
 if __name__ == "__main__":
     args=parseargs()
+<<<<<<< HEAD
+    # Main function
+    generate_assembly_library(args.gene_file, args.mutations, args.enzyme_name, args.min_oligo_size, args.max_oligo_size)
+=======
     #Main function
     generate_assembly_library(args.gene_file, args.mutations, args.enzyme_name, args.min_oligo_size, args.max_oligo_size)
 
@@ -148,3 +156,4 @@ if __name__ == "__main__":
 
     # # Print or process the final result if needed
     # print(final_result)
+>>>>>>> af1e04e2be3273ea66932b5846a479874f573998
