@@ -2,8 +2,14 @@ from flask import Flask, render_template, request, send_file, session, redirect,
 import os
 import io
 import sys
-sys.path.append('../src')  # Add the src directory to the path
-from main import generate_assembly_library  # Import the function from main.py
+src_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../src"))
+print(f"Adding src directory to path: {src_dir}")
+sys.path.append(src_dir)
+try:
+    from main import generate_assembly_library  # Import the function from main.py
+except ImportError as e:
+    raise(e)
+print("All modules imported successfully!")
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
@@ -60,16 +66,19 @@ def result():
         return redirect(url_for('home'))
     return render_template('result.html')  # Display the result page
 
+
 @app.route('/download')
 def download():
     result_csv = session.get('result_csv', None)
     if not result_csv:
         return redirect(url_for('home'))
 
-    # Send the CSV file as a downloadable response
-    output = io.StringIO(result_csv)
-    output.seek(0)
-    return send_file(output, mimetype='text/csv', as_attachment=True, attachment_filename='result.csv')
+    # Convert string to bytes and wrap it with BytesIO
+    output = io.BytesIO(result_csv.encode('utf-8'))  # Encode the string as bytes
+    output.seek(0)  # Rewind the stream to the beginning
+
+    # Send the file as a download
+    return send_file(output, mimetype='text/csv', as_attachment=True, download_name='result.csv')
 
 if __name__ == '__main__':
     app.run(debug=True)

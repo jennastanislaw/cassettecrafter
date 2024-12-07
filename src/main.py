@@ -24,7 +24,7 @@ from enzyme_site_replacement_utils import (load_enzymes_from_csv, create_enzyme_
 from mixed_base_rec_site_check import degen_codon_checker
 from enzyme_site_replacement import remove_enzyme_sites
 from split_sites import (find_split_indices)
-from src.split_sites_utils import generate_cassettes
+from split_sites_utils import generate_cassettes
 
 
 # to include in global variable file:
@@ -50,7 +50,8 @@ def generate_assembly_library(gene_file, mutations, enzyme_name, min_oligo_size,
     Returns:
         DataFrame : Pandas DataFrame containing mutation name and sequence
     """
-    enzyme_fp = './data/enzyme_sites.csv'
+    print(os.getcwd())
+    enzyme_fp = './src/data/enzyme_sites.csv'
 
 # 1. Create enzyme object
     enzyme_class_objs = load_enzymes_from_csv(enzyme_fp) # should this be enzyme_data?
