@@ -28,26 +28,18 @@ This software generates a library of DNA sequence cassettes that contain all pos
 
 - Python 3.x
 - Flask 
-- biopython
-- pandas
-
-- ## Installation and Setup
-After cloning the GitHub repository, the user can create the conda environment containing packages needed to run all of the sofware with: 
- `conda env create -f environment.yml`
-
-The following Python packages are required for this software and are included:
-* Pandas
-* BioPython
-* Optional: pytest
-
+- BioPython
+- Pandas
+- Optional: Pytest
+  
 ### Setup
 
 1. Clone the repository:
    git clone https://github.com/yourusername/cassettecrafter.git
    cd cassettecrafter
 
-2. Instal Flask
-   pip install flask
+2. Create the conda environment containing packages needed to run the software: 
+ `conda env create -f environment.yml`
 
 3. Run the App 
    Ensure the app is run from the cassettecrafter directory
