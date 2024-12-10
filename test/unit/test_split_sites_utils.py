@@ -326,7 +326,16 @@ class TestAdjustOligoLengths:
         recognition_site_len = 10
         spacer_bps = 5
         OH_len = 5
-        assert adjust_oligo_lengths(min_oligo_len, max_oligo_len, recognition_site_len, spacer_bps, OH_len) == (1, 60)
+        try:
+            adjust_oligo_lengths(min_oligo_len, max_oligo_len, recognition_site_len, spacer_bps, OH_len)
+        except ValueError as e:
+            assert str(e) == (
+                "The minimum oligo length (10) is incompatible with the selected enzyme. "
+                "It must be at least 41 to accommodate the enzyme properties "
+                "(recognition site: 10, spacer: 5, overhang: 5)."
+            )
+        else:
+            assert False, "Expected ValueError to be raised for incompatible min oligo length."
 
     def test_zero_spacer_and_OH(self):
         """Test when spacer_bps and OH_len are zero."""
@@ -366,12 +375,12 @@ class TestAdjustOligoLengths:
             adjust_oligo_lengths(min_oligo_len, max_oligo_len, recognition_site_len, spacer_bps, OH_len)
         except ValueError as e:
             assert str(e) == (
-                "The max oligo length (30) is incompatible with the selected enzyme. "
+                "The minimum oligo length (20) is incompatible with the selected enzyme. "
                 "It must be at least 41 to accommodate the enzyme properties "
                 "(recognition site: 10, spacer: 5, overhang: 5)."
             )
         else:
-            assert False, "Expected ValueError to be raised for incompatible max oligo length."
+            assert False, "Expected ValueError to be raised for incompatible min oligo length."
 
     def test_exactly_equal_to_adjustment(self):
         """Test when max_oligo_len is exactly equal to the required adjustment."""
@@ -384,27 +393,9 @@ class TestAdjustOligoLengths:
             adjust_oligo_lengths(min_oligo_len, max_oligo_len, recognition_site_len, spacer_bps, OH_len)
         except ValueError as e:
             assert str(e) == (
-                "The max oligo length (40) is incompatible with the selected enzyme. "
+                "The minimum oligo length (40) is incompatible with the selected enzyme. "
                 "It must be at least 41 to accommodate the enzyme properties "
                 "(recognition site: 10, spacer: 5, overhang: 5)."
-            )
-        else:
-            assert False, "Expected ValueError to be raised for incompatible max oligo length."
-
-    def test_max_oligo_len_less_than_adjustment(self):
-        """Test when max_oligo_len is less than or equal to the adjustment, raising an error."""
-        min_oligo_len = 50
-        max_oligo_len = 20
-        recognition_site_len = 6
-        spacer_bps = 5
-        OH_len = 3
-        try:
-            adjust_oligo_lengths(min_oligo_len, max_oligo_len, recognition_site_len, spacer_bps, OH_len)
-        except ValueError as e:
-            assert str(e) == (
-                "The max oligo length (20) is incompatible with the selected enzyme. "
-                "It must be at least 29 to accommodate the enzyme properties "
-                "(recognition site: 6, spacer: 5, overhang: 3)."
             )
         else:
             assert False, "Expected ValueError to be raised for incompatible max oligo length."

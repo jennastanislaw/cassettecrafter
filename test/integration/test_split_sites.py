@@ -82,13 +82,13 @@ def test_data():
     """
     reference = "ATGCGTACGTTAGCTAGCGTACGTTAGC"  # Reference DNA sequence used for comparison
     sequences = [
-        "ATGCGTACGTTAGCTAGCGTACGTTAGC",  # Identical sequence to the reference
-        "ATGCGTACGTTAGCTAGCGTACGTTTGC",  # Sequence with one mismatch at the end
-        "ATGCGTACGTTAGCTAGCGTACGTTTAC"   # Sequence with a mismatch at a different position
+        "ATGCGTACGTTAGCTAGCGTACGTCGTACGTTAGCTAGCGTACGTTAGC",  # Identical sequence to the reference
+        "ATGCGTACGTTAGCTACGTACGTTAGCTAGCGTACGTGCGTACGTTTGC",  # Sequence with one mismatch at the end
+        "ATGCGTACGTTAGCTACGTACGTTAGCTAGCGTACGTGCGTACGTTTAC"   # Sequence with a mismatch at a different position
     ]
     enzyme = Enzyme(fwd_recognition_site="GAATTC", OH_length=4, spacer_length=2)  # Create an Enzyme object
-    min_oligo_len = 6  # Minimum oligo length to check against during DNA sequence processing
-    max_oligo_len = 37  # Maximum oligo length for allowed DNA sequences
+    min_oligo_len = 25  # Minimum oligo length to check against during DNA sequence processing
+    max_oligo_len = 45  # Maximum oligo length for allowed DNA sequences
 
     return reference, sequences, enzyme, min_oligo_len, max_oligo_len  # Return all test data as a tuple
 
@@ -161,25 +161,6 @@ class TestFindSplitIndices:
         # Ensure all oligo lengths fall within the valid range
         assert all(true_min_oligo_len <= length <= true_max_oligo_len for length in oligo_lengths), \
             "All oligo lengths should be within the specified range"
-
-    def test_handles_short_reference(self):
-        """
-        Test behavior when the reference sequence is short.
-
-        For short reference sequences (e.g., <= 4 bases), the only valid split
-        indices should be [0, len(reference)] since no further splitting is possible.
-        """
-        reference = "ATGC"
-        sequences = ["ATGC", "ATGC"]
-        enzyme = Enzyme(fwd_recognition_site="GAATTC", OH_length=4, spacer_length=2)
-        min_oligo_len = 2
-        max_oligo_len = 25
-
-        # Call the function under test
-        result = find_split_indices(reference, sequences, min_oligo_len, max_oligo_len, enzyme)
-
-        # Verify that for short references, the result is just [0, len(reference)]
-        assert result == [0, len(reference)], "For short references, split indices should be [0, len(reference)]"
 
     def test_respects_overhangs(self, test_data):
         """

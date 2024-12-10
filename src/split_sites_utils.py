@@ -64,9 +64,9 @@ def adjust_oligo_lengths(min_oligo_len, max_oligo_len, recognition_site_len, spa
     len_adj = 2 * (recognition_site_len + spacer_bps + OH_len)
 
     # Check if max oligo length is compatible with the enzyme
-    if max_oligo_len <= len_adj:
+    if min_oligo_len <= len_adj:
         raise ValueError(
-            f"The max oligo length ({max_oligo_len}) is incompatible with the selected enzyme. "
+            f"The minimum oligo length ({min_oligo_len}) is incompatible with the selected enzyme. "
             f"It must be at least {len_adj+1} to accommodate the enzyme properties "
             f"(recognition site: {recognition_site_len}, spacer: {spacer_bps}, overhang: {OH_len})."
         )
