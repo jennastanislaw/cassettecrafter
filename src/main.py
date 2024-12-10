@@ -20,11 +20,11 @@ import pandas as pd
 from process_inputs import process_inputs
 from generate_mutant_lib import generate_mutant_lib
 from process_sequence_list import process_dna_sequences
-from enzyme_site_replacement_utils import (load_enzymes_from_csv, create_enzyme_dict)
+from utils.enzyme_site_replacement_utils import (load_enzymes_from_csv, create_enzyme_dict)
 from mixed_base_rec_site_check import degen_codon_checker
 from enzyme_site_replacement import remove_enzyme_sites
 from split_sites import (find_split_indices)
-from split_sites_utils import generate_cassettes
+from utils.split_sites_utils import generate_cassettes
 
 
 def generate_assembly_library(gene, mutations, enzyme_name, min_oligo_size, max_oligo_size):

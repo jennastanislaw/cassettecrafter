@@ -1,6 +1,6 @@
 import pandas as pd
 import os
-from process_inputs_utils import (get_gene_name, get_seq, biopython_seq_from_str,
+from utils.process_inputs_utils import (get_gene_name, get_seq, biopython_seq_from_str,
                                 get_allowed_codon_list, split_csl)
 
 # Main function

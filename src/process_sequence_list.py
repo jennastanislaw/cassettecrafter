@@ -15,7 +15,7 @@ Functions:
         a modified DataFrame.
 """
 
-from process_sequence_list_utils import add_end_restriction_sites, ensure_minimum_length
+from utils.process_sequence_list_utils import add_end_restriction_sites, ensure_minimum_length
 
 
 def process_dna_sequences(df, enzyme, min_oligo_size):

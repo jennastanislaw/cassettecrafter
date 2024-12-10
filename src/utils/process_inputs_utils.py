@@ -1,6 +1,6 @@
 import copy
 from Bio.Seq import Seq
-from dna_aa_definitions import CODON_TABLE_DNA, CODON_TO_AMINO_ACID_DNA, MIXED_BASES, MIXED_BASES_COMBO_TO_BASE
+from data.dna_aa_definitions import CODON_TABLE_DNA, CODON_TO_AMINO_ACID_DNA, MIXED_BASES, MIXED_BASES_COMBO_TO_BASE
 
 ### Helper functions for read_input ###
 # Get name from te fasta or csv

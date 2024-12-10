@@ -7,7 +7,7 @@ This script provides functions to:
 functionality.
 
 Modules:
-    enzyme_site_replacement_utils: Utility functions for enzyme site matching and codon replacement.
+     Utility functions for enzyme site matching and codon replacement.
 
 Functions:
     remove_enzyme_sites(enzyme, DNA_df):
@@ -16,7 +16,8 @@ Functions:
     replace_enzyme_site(enzyme, DNA):
         Replaces recognition sites for the specified enzyme in a DNA sequence.
 """
-import enzyme_site_replacement_utils
+#import utils.enzyme_site_replacement_utils
+from utils.enzyme_site_replacement_utils import (find_matching_sites, get_affected_codons_by_recognition_sites, generate_synonymous_codons_dna, find_matching_sites)
 
 
 def remove_enzyme_sites(enzyme, DNA_df):
@@ -51,12 +52,12 @@ def replace_enzyme_site(enzyme, DNA):
     DNA_rec_sites_rem = list(DNA)
 
     # Find all forward and reverse recognition site matches in the DNA sequence.
-    fwd_matches, rev_matches = enzyme_site_replacement_utils.find_matching_sites(enzyme, DNA)
+    fwd_matches, rev_matches = find_matching_sites(enzyme, DNA)
 
     # Determine codons affected by forward and reverse recognition sites.
-    fwd_codons = enzyme_site_replacement_utils.get_affected_codons_by_recognition_sites(
+    fwd_codons = get_affected_codons_by_recognition_sites(
         DNA, fwd_matches, enzyme.fwd_recognition_site)
-    rev_codons = enzyme_site_replacement_utils.get_affected_codons_by_recognition_sites(
+    rev_codons = get_affected_codons_by_recognition_sites(
         DNA, rev_matches, enzyme.rev_recognition_site)
 
     # Combine all affected codons from forward and reverse matches into a single dictionary.
@@ -77,7 +78,7 @@ def replace_enzyme_site(enzyme, DNA):
             codon = codon_tuple[0]  # Original codon sequence.
             codon_idx = codon_tuple[1][0]  # Starting index of the codon in the DNA sequence.
             # Generate synonymous codons for the current codon.
-            alt_codons = enzyme_site_replacement_utils.generate_synonymous_codons_dna(codon)
+            alt_codons = generate_synonymous_codons_dna(codon)
 
             for alt_codon in alt_codons:
                 # Replace the current codon with a synonymous codon.
@@ -85,7 +86,7 @@ def replace_enzyme_site(enzyme, DNA):
 
                 # Check if the recognition site was successfully removed.
                 DNA_check = ''.join(DNA_rec_sites_rem)
-                fwd_matches, rev_matches = enzyme_site_replacement_utils.find_matching_sites(enzyme, DNA_rec_sites_rem)
+                fwd_matches, rev_matches = find_matching_sites(enzyme, DNA_rec_sites_rem)
                 match_idx = fwd_matches + rev_matches
                 if key not in match_idx:
                     # Replacement successful; log and exit the loop.

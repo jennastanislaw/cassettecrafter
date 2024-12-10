@@ -1,4 +1,4 @@
-from dna_aa_definitions import CODON_TABLE_DNA, CODON_TO_AMINO_ACID_DNA, MIXED_BASES, MIXED_BASES_COMBO_TO_BASE
+from data.dna_aa_definitions import CODON_TABLE_DNA, CODON_TO_AMINO_ACID_DNA, MIXED_BASES, MIXED_BASES_COMBO_TO_BASE
 
 def make_mut_dict(editable_codon_seq, all_combinations, name, mutations_df):
     """From a list of mutation combinations, generate a dictionary containing 
