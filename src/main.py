@@ -68,11 +68,6 @@ def generate_assembly_library(gene_file, mutations, enzyme_name, min_oligo_size,
 # 3. Generate library of mutant sequences
     library_df = generate_mutant_lib(starting_dna,mutations_df, name)
 
-    #this needs to be removed, along with pandas import
-    library_df['DNA'] = (library_df['DNA'].str.replace(r"b'|b\"|'|\"", '', regex=True)  # Remove b', b", ', and "
-    .str.replace(r'\s+', '', regex=True)          # Remove extra spaces, if any
-)
-
 # 4. Replace any unwanted enzyme sites
 ## This is going to make the naming of the sequences weird, will need to fix this
 
@@ -98,9 +93,16 @@ def generate_assembly_library(gene_file, mutations, enzyme_name, min_oligo_size,
 
     final_df = process_dna_sequences(cassettes_df, enzyme, min_oligo_size)
 
+    final_df.set_index("Index", inplace=True)  # Ensure there's an index column
+
+    # Extract only columns starting with "Cassette"
+    cassette_columns = [col for col in final_df.columns if col.startswith("Cassette")]
+
+    filtered_df = final_df[cassette_columns]
+
     print(final_df) # export to csv in a way that pushes to the website
 
-    return final_df
+    return filtered_df
 
 def parseargs():
     parser=argparse.ArgumentParser(
@@ -131,19 +133,15 @@ def parseargs():
     return args
 
 if __name__ == "__main__":
-    # args=parseargs()
-    # #Main function
-    # generate_assembly_library(args.gene_file, args.mutations, args.enzyme_name, args.min_oligo_size, args.max_oligo_size)
-    #
+    args=parseargs()
+    #Main function
+    generate_assembly_library(args.gene_file, args.mutations, args.enzyme_name, args.min_oligo_size, args.max_oligo_size)
 
-    # Uncomment this line to run with hardcoded arguments for testing
-    final_result = generate_assembly_library(
-        gene_file="/Users/siobhan/PycharmProjects/cassettecrafter/test_data/LY011_test_seq_single.csv",
-        mutations="/Users/siobhan/PycharmProjects/cassettecrafter/test_data/demo_mutation_list.csv",
-        enzyme_name="BbsI",
-        min_oligo_size=20,
-        max_oligo_size=100
-    )
-
-    # # Print or process the final result if needed
-    # print(final_result)
+    # # Uncomment this line to run with hardcoded arguments for testing
+    # final_result = generate_assembly_library(
+    #     gene_file="/Users/siobhan/PycharmProjects/cassettecrafter/test_data/LY011_test_seq_single.csv",
+    #     mutations="/Users/siobhan/PycharmProjects/cassettecrafter/test_data/demo_mutation_list.csv",
+    #     enzyme_name="BbsI",
+    #     min_oligo_size=20,
+    #     max_oligo_size=100
+    # )
