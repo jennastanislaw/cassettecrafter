@@ -87,17 +87,18 @@ def generate_assembly_library(gene, mutations, enzyme_name, min_oligo_size, max_
 
     final_df = process_dna_sequences(cassettes_df, enzyme, min_oligo_size)
 
-    return final_df
-    # final_df.set_index("index", inplace=True)  # Ensure there's an index column
+    # Assuming final_df is your DataFrame
+    final_df['Index'] = range(len(final_df))  # Create an index column with sequential numbers
+    final_df.set_index('Index', inplace=True)  # Set the new column as the index
 
-    # # Extract only columns starting with "Cassette"
-    # cassette_columns = [col for col in final_df.columns if col.startswith("Cassette")]
+    # Extract only columns starting with "Cassette"
+    cassette_columns = [col for col in final_df.columns if col.startswith("Cassette")]
 
-    # filtered_df = final_df[cassette_columns]
+    filtered_df = final_df[cassette_columns]
 
-    # print(final_df) # export to csv in a way that pushes to the website
+    # print(filtered_df) # TODO: export to csv in a way that pushes to the website?
 
-    # return filtered_df
+    return filtered_df
 
 def parseargs():
     parser=argparse.ArgumentParser(
