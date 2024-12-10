@@ -36,7 +36,6 @@ This software generates a library of DNA sequence cassettes that contain all pos
 
 1. Clone the repository:
    `git clone <https://github.com/yourusername/cassettecrafter.git>`
-   `cd cassettecrafter`
 
 2. Create the conda environment containing packages needed to run the software: 
  `conda env create -f environment.yml`
