@@ -42,15 +42,6 @@ class TestGet_Gene_Name:
 
         pytest.raises(ValueError, get_gene_name, lines_wrong, wrong_type)
 
-class TestGen_Per_Pos_Muts:
-    @staticmethod
-    def test_pass():
-        pass
-
-    @staticmethod
-    def test_fail():
-        pass
-
 class TestGet_Seq:
     @staticmethod
     def test_pass():
