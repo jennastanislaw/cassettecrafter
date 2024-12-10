@@ -1,4 +1,5 @@
 import pandas as pd
+import os
 from process_inputs_utils import (get_gene_name, get_dna_seq, 
                                 get_allowed_codon_list, split_csl)
 

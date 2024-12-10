@@ -21,7 +21,7 @@ def generate_random_dna(n):
 
     # Create a Biopython Seq object
     dna_sequence = Seq(random_sequence)
-    print(dna_sequence)
+    #print(dna_sequence)
     return dna_sequence
 
 generate_random_dna(125)

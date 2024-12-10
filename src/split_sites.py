@@ -1,6 +1,6 @@
-from src.split_sites_utils import calculate_oligo_lengths, adjust_oligo_lengths, \
+from split_sites_utils import calculate_oligo_lengths, adjust_oligo_lengths, \
     generate_cassettes, is_valid_overhang, hamming_distance, find_constant_indices
-from src.split_sites_utils import find_starts_of_consecutive_indices
+from split_sites_utils import find_starts_of_consecutive_indices
 import pandas as pd
 from itertools import combinations
 
