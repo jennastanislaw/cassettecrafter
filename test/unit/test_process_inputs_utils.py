@@ -12,9 +12,8 @@ from process_inputs_utils import (
     get_seq,
     biopython_seq_from_str,
     convert_aa_to_dna,
-    gen_per_pos_muts,
     split_csl,
-    get_allowed_codon_list,
+    #get_allowed_codon_list, #in integrated tests
     add_mixed_bases_and_combine,
     get_mixed_base_codon,
     check_leu_arg_ser
@@ -43,7 +42,7 @@ class TestGet_Gene_Name:
 
         pytest.raises(ValueError, get_gene_name, lines_wrong, wrong_type)
 
-class TestGet_Seq:
+class TestGen_Per_Pos_Muts:
     @staticmethod
     def test_pass():
         pass
@@ -52,7 +51,7 @@ class TestGet_Seq:
     def test_fail():
         pass
 
-class TestGen_Per_Pos_Muts:
+class TestGet_Seq:
     @staticmethod
     def test_pass():
         fa_lines=[">genename,Info",
@@ -81,12 +80,12 @@ class TestGen_Per_Pos_Muts:
         pytest.raises(UnboundLocalError, get_seq, lines, wrong_filetype)
 
 class TestBiopython_Seq_From_Str:
-    @staticmethod
-
+    
     # Test for DNA. While the function can accept protein (amino acid) input, 
     # this is converted to DNA using convert_aa_to_dna(), and thus that 
     # functionality will not be assessed in this unit test. See convert_aa_to_dna
     # unit tests and integration tests
+    @staticmethod
     def test_pass_dna():
         input_str="ATTGTTCTAGTA"
         input_str_lower=input_str.lower()
@@ -127,23 +126,6 @@ class TestConvert_Aa_To_Dna:
         pytest.raises(AssertionError, convert_aa_to_dna, int_input)
         pytest.raises(ValueError, convert_aa_to_dna, invalid_str)
 
-class TestGen_Per_Pos_Muts:
-    @staticmethod
-    def test_pass():
-        input=pd.DataFrame({"indices":[1,2],
-                            "allowed":[["A,C,D"],["F,G"]]})
-        correct_out={1:["A,C,D"],
-                     2:["F,G"]}
-        
-        output= gen_per_pos_muts(input)
-
-        assert output==correct_out
-        
-    
-    @staticmethod
-    def test_fail():
-        pass
-
 class TestSplit_Csl:
     @staticmethod
     def test_pass():
@@ -153,17 +135,89 @@ class TestSplit_Csl:
         output=split_csl(input_str)
 
         assert output==correct_output
-
-'''    @staticmethod
+    
+    @staticmethod
     def test_fail():
-        pass
+        no_comma = "abcd"
+        not_str = 0
 
-class TestGet_Allowed_Codon_List:
+        pytest.raises(ValueError, split_csl, no_comma)
+        pytest.raises(TypeError, split_csl, not_str)
+
+class TestAdd_Mixed_Bases_And_Combine:
     @staticmethod
     def test_pass():
-        pass
+        input_codons_one = ["ATG", "ATC"]
+        expected_output_one = ["ATS"]
+
+        input_codons_two = ["ATG", "ATC", "CCC","GAT","GAA"]
+        expected_output_two = ["ATS", "CCC", "GAW"]
+
+        empty=[]
+        expected_empty_out=[]
+
+        output_one = add_mixed_bases_and_combine(input_codons_one)
+        output_two = add_mixed_bases_and_combine(input_codons_two)
+        output_empty = add_mixed_bases_and_combine(empty)
+
+        assert expected_output_one.sort() == output_one.sort()
+        assert expected_output_two.sort() == output_two.sort()
+        assert output_empty == expected_empty_out
 
     @staticmethod
     def test_fail():
-        pass
-'''
+        wrong_type=0
+
+        pytest.raises(TypeError, add_mixed_bases_and_combine, wrong_type)
+
+class TestGet_Mixed_Base_Codon:
+    @staticmethod
+    def test_pass():
+        input1 = "ATT"
+        input2 = "ATG"
+        correct_output="ATK"
+
+        output = get_mixed_base_codon(input1, input2)
+
+        assert output == correct_output
+
+    @staticmethod
+    def test_fail():
+        wrong_type=0
+        wrong_len="ATAGCTGA"
+        normal_codon="ATG"
+
+        pytest.raises(TypeError, get_mixed_base_codon, wrong_type, normal_codon)
+        pytest.raises(ValueError, get_mixed_base_codon, normal_codon, wrong_len)
+
+
+class TestCheck_Leu_Arg_Ser:
+    @staticmethod
+    def test_pass():
+        leu_input = "CTT"
+        arg_input = "CGT"
+        ser_input = "TCT"
+        none_input = "ATT"
+
+        correct_leu_output = "TTA"
+        correct_arg_output = "AGA"
+        correct_ser_output = "AGC"
+        correct_none_output = "ATT"
+
+        out_leu = check_leu_arg_ser(leu_input)
+        out_arg = check_leu_arg_ser(arg_input)
+        out_ser = check_leu_arg_ser(ser_input)
+        out_none = check_leu_arg_ser(none_input)
+        
+        assert correct_leu_output == out_leu
+        assert correct_arg_output == out_arg
+        assert correct_ser_output == out_ser
+        assert correct_none_output == out_none
+
+    @staticmethod
+    def test_fail():
+        wrong_type=0
+        wrong_len="ATAGCTGA"
+
+        pytest.raises(ValueError, check_leu_arg_ser, wrong_len)
+        pytest.raises(TypeError, check_leu_arg_ser, wrong_type)

@@ -1,8 +1,7 @@
-# from dna_aa_definitions import CODON_TO_AMINO_ACID_DNA
 from dna_aa_definitions import CODON_TABLE_DNA, CODON_TO_AMINO_ACID_DNA, MIXED_BASES, MIXED_BASES_COMBO_TO_BASE
 
 def make_mut_dict(editable_codon_seq, all_combinations, name, mutations_df):
-    """From a list of mutation combinations, generate a dictionary containing 
+    """From a list of mutation combinations, generate a dicgtionary containing 
         mutation names, and their corresponding mutated sequence. The original
         sequence is 'mutated' by replacing the codon at the specified position
         with that codon that codes for one of the allowed amino acid mutations 
@@ -36,7 +35,7 @@ def make_mut_dict(editable_codon_seq, all_combinations, name, mutations_df):
             # Check if this combo contains a mutation from the original amino acid
             og_aa = mutations_df.loc[pos,"original"]
 
-            #TODO: move this naming to end?
+            #Special case for naming mutations encoded by mixed base codons
             last_base = combo[i][-1]
             if last_base not in "ACGT":
                 codon1 = combo[i][:2] + MIXED_BASES[last_base][0]
@@ -56,7 +55,8 @@ def make_mut_dict(editable_codon_seq, all_combinations, name, mutations_df):
     return mut_library
 
 def split_to_codons(dna_seq):
-    """Split a DNA sequence to a list of codons
+    """Split a DNA sequence to a list of codons by dividing it into fragments
+        of length 3
 
     Args:
         dna_seq (str): string containing DNA sequence
@@ -65,10 +65,13 @@ def split_to_codons(dna_seq):
         list: list of strings, where each item in the list corresponds to one 
             codon (set of 3 base pairs) from the input sequence
     """
-    codon_list = [] # output list
+    if type(dna_seq) != str:
+        raise TypeError("DNA sequence must be a string") 
+    elif len(dna_seq) % 3 != 0:
+        # check that length of sequence is divisible by 3
+        raise ValueError("Sequence must have a length that is a multiple of 3.")
 
-    # check that length of sequence is divisible by 3
-    assert len(dna_seq) % 3 == 0, "Sequence must have a length that is a multiple of 3."
+    codon_list = [] # output list
 
     # Iterate over the sequence in steps of 3 to get codons
     for i in range(0, len(dna_seq), 3):

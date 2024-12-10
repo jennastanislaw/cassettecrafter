@@ -1,4 +1,3 @@
-# import sys
 import copy
 from Bio.Seq import Seq
 from dna_aa_definitions import CODON_TABLE_DNA, CODON_TO_AMINO_ACID_DNA, MIXED_BASES, MIXED_BASES_COMBO_TO_BASE
@@ -100,7 +99,7 @@ def convert_aa_to_dna(prot_seq, codon_library=CODON_TABLE_DNA):
     Returns:
         str : the converted DNA sequence
     """
-    assert type(prot_seq) == str, f"The sequence much be a string, not a(n) {type(prot_seq).__name__}"
+    assert type(prot_seq) == str, f"The sequence must be a string, not a(n) {type(prot_seq).__name__}"
     
     dna_seq = ""
     allowed_aas = list(codon_library.keys())
@@ -111,30 +110,6 @@ def convert_aa_to_dna(prot_seq, codon_library=CODON_TABLE_DNA):
             raise ValueError(f"Invalid amino acid: {aa}")
     
     return dna_seq
-
-### Helper functions for mutation_file_to_df ###
-def gen_per_pos_muts(mutation_df):
-    """Convert "allowed" column in dataframe to dictionary
-
-    Args:
-        mutation_df (pandas DataFrame): dataframe containing data about allowed
-            mutations at different positions in the original sequence
-
-    Returns:
-        dict: dictionary mapping indices of input dataframe to values in the column 
-            labelled "allowed"
-    """
-    columns = mutation_df.columns.tolist()
-    print(columns)
-    print(mutation_df)
-
-    if "allowed" not in columns:
-        raise KeyError("Mutation csv must contain a column called 'allowed'," +
-                    "which contains a comma-separated list of possible mutations" + 
-                    "for each position")
-    
-    mutation_dict = mutation_df['allowed'].to_dict()
-    return mutation_dict
 
 # Take comma separated list and return split list of strings
 def split_csl(csl):
@@ -150,6 +125,11 @@ def split_csl(csl):
     Returns:
         list: list of strings
     """
+    if type(csl) != str:
+        raise TypeError(f"Input must be a string, not a(n) {type(csl).__name__}")
+    elif "," not in csl:
+        raise ValueError("Input must be formatted as a comma-separated list")
+   
     return list(val.strip() for val in csl.split(","))
 
 def get_allowed_codon_list(mutations_aa, original_codons):
@@ -173,7 +153,7 @@ def get_allowed_codon_list(mutations_aa, original_codons):
     # For each positions's possible mutations, convert the list of amino acids
     # to a list of codons
     for pos,allowed_aa_at_pos in enumerate(mutations_aa):
-        allowed_codons_at_pos= list() #TODO: rename this variable
+        allowed_codons_at_pos= list() 
         original_codon = original_codons[pos]
         original_aa = CODON_TO_AMINO_ACID_DNA[original_codon]
     
@@ -190,21 +170,39 @@ def get_allowed_codon_list(mutations_aa, original_codons):
 
     return output
 
-# fxn to combine any AA with shared first 2 bases
 def add_mixed_bases_and_combine(allowed_codons_at_pos):
-    modifiable_allowed_codon_list = copy.deepcopy(allowed_codons_at_pos)
-    #TODO: add check of length of mutation list
+    """Accepts an input that consists of codons mapping to allowed mutations and
+        checks this list to see if there are any codons that can be combined
+        into a codon with a mixed based. Codons can include a mixed base which 
+        can encode for multiple bases, allowing for two codons that encode
+        two different amino acids but only vary in sequence at the third base
+        to be encoded by a single codon instead. The simplified list with
+        mixed base codon is returned
 
-    if len(allowed_codons_at_pos) < 1:
+    Args:
+        allowed_codons_at_pos (list of str): List of codons, corresponging to
+            the allowed codons at one position in the input sequence
+
+    Returns:
+        list: list of strings of codons of allowed mutations
+    """
+    modifiable_allowed_codon_list = copy.deepcopy(allowed_codons_at_pos)
+    if type(allowed_codons_at_pos) != list:
+        raise TypeError("Allowed codons must be a list of strings")
+    if len(allowed_codons_at_pos) == 0: #Return empty list if not mutations
+        return []
+    # Return the single mutation if there is only one
+    # Need to capture edge case here, otherwise will throw error later
+    elif len(allowed_codons_at_pos) < 1: 
         return allowed_codons_at_pos
     for i, curr_codon in enumerate(allowed_codons_at_pos[:-1]):
-        curr_codon_mod, base_1_2 = check_leu_arg_ser(curr_codon)
-        # print("current", curr_codon)
+        curr_codon_mod = check_leu_arg_ser(curr_codon)
+        base_1_2 = curr_codon_mod[:2]
 
         # Compare beginning of current codon to those in the allowed codons list
         for j, match_codon in enumerate(allowed_codons_at_pos[i+1:]):
-            match_codon_mod, match_first_two = check_leu_arg_ser(match_codon)
-            # print("match", match_codon)
+            match_codon_mod = check_leu_arg_ser(match_codon)
+            match_first_two = match_codon_mod[:2]
 
             # If there is a match, find the mixed base that fits both codons
             if match_first_two == base_1_2: # add something for special cases: ARG (R) and LEU (L)
@@ -221,11 +219,33 @@ def add_mixed_bases_and_combine(allowed_codons_at_pos):
     return modifiable_allowed_codon_list 
 
 def get_mixed_base_codon(codonA, codonB):
+    """Find the appropriate codon containing a mixed base in the third position
+        which satisfies both of the input codons. In other words, the input
+        codons share the same two bases, but differ on the third base. This 
+        function returns a codon with a third base that is a mixed base and 
+        not a conventional amino acid. This specific mixed base should encode 
+        for both of the third bases of the input codon.
+
+    Args:
+        codonA (str): three-letter codon of one of the amino acids
+        codonB (str): three-letter codon of the other amino acid
+
+    Returns:
+        str: codon containing mixed based
+    """
+    for input_codon in [codonA, codonB]:
+        if type(input_codon) != str:
+            raise TypeError("Input codon must be a string")
+        elif len(input_codon) != 3:
+            raise ValueError("Input codon must be a string with 3 letters")
+    
+    # Sort the two bases alphabetically to generate the correct key of lookup
     base3_l = [codonA[-1],codonB[-1]]
     base3_l.sort()
     base3_joint_str = "".join(base3_l)
 
-    # Access the 
+    # Access the pre-defined dictionary mapping bases to mixed bases, and
+    # outputs value paired with the key generated above
     base3_mixed = MIXED_BASES_COMBO_TO_BASE[base3_joint_str]
 
     # Full codon with the third position as a mixed base
@@ -235,15 +255,44 @@ def get_mixed_base_codon(codonA, codonB):
     return codon
 
 def check_leu_arg_ser(codon):
+    """Check the provided codon and sees if it codes for leucine,
+        arginine, or serine. These 3 amino acids each have 6 codons that encode
+        them; however, only 2/6 of these codons share the first 2 bases with 
+        the codon for another amino acid. Therefore, to capture these edge cases
+        and check if there is a possibility to use a mixed codon, this function 
+        returns one of the codons which has a possible match in the first 2 
+        bases to another amino acid's codons.
+
+        (Example for explanation:
+        Leucine codons: ['TTA', 'TTG', 'CTT', 'CTC', 'CTA', 'CTG']
+        Phenylalanine codons: ['TTT', 'TTC']
+        Leu must be encoded by TTA or TTG for it to share the first two
+        bases with Phe. Therefore, we may need to modify the codon being used
+        to check if there is a possibiity to use a mixed base which encodes two
+        possible amino acids at the same position 
+        )
+
+    Args:
+        codon (str): three letter codon 
+
+    Returns:
+        tuple of strings: (a codon whose first two bases are shared with another
+                amino acid's codons, the first two bases of that codon as a str)
+    """
+    # Check input type
+    if type(codon) != str:
+        raise TypeError("Input codon must be a string")
+    elif len(codon) != 3:
+        raise ValueError("Input codon must be a string with 3 letters")
+    
     # Assign the first possible codon with a possible match to another amino acid codon if the first two bases
     codon_base_1_2 = codon[:2]
     if codon_base_1_2 == "CT": # Leu
-        codon_base_1_2 = "TT"
-        codon = "TTA"
+        new_codon = "TTA"
     elif codon_base_1_2 == "CG": # Arg
-        codon_base_1_2 = "AG"
-        codon = "AGA"
+        new_codon = "AGA"
     elif codon_base_1_2 == "TC": # Ser
-        codon_base_1_2 = "AG"
-        codon = "AGC"
-    return codon, codon_base_1_2
+        new_codon = "AGC"
+    else:
+        new_codon = codon
+    return new_codon
