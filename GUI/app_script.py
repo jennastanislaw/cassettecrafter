@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, send_file, session, redirect,
 import os
 import io
 import sys
-sys.path.append('../src')  # Add the src directory to the path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../src')))  # Add the src directory to the path
 from main import generate_assembly_library  # Import the function from main.py
 
 app = Flask(__name__)
