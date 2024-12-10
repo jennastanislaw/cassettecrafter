@@ -15,6 +15,7 @@ Example: python3 src/main.py -m ./test_data/demo_mutation_list.csv
 
 import argparse
 import os
+import pandas as pd
 
 from process_inputs import process_inputs
 from generate_mutant_lib import generate_mutant_lib
@@ -22,7 +23,9 @@ from process_sequence_list import process_dna_sequences
 from enzyme_site_replacement_utils import (load_enzymes_from_csv, create_enzyme_dict)
 from mixed_base_rec_site_check import degen_codon_checker
 from enzyme_site_replacement import remove_enzyme_sites
-from split_sites import (find_split_indices, generate_cassettes)
+from split_sites import (find_split_indices)
+from split_sites_utils import generate_cassettes
+
 
 def generate_assembly_library(gene, mutations, enzyme_name, min_oligo_size, max_oligo_size):
     """Generates Golden Gate-compatible sequence library containing all possible
@@ -80,7 +83,7 @@ def generate_assembly_library(gene, mutations, enzyme_name, min_oligo_size, max_
     split_sites = find_split_indices(reference, sequences, min_oligo_size, max_oligo_size, enzyme)
 
     # 6 generate cassettes
-    cassettes_df = generate_cassettes(rec_sites_removed, split_sites)
+    cassettes_df = generate_cassettes(rec_sites_removed, split_sites, enzyme)
 
     # 7. Final sequence processing (add terminal enzyme sites and extra bases if needed)
 
