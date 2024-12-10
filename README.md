@@ -41,11 +41,11 @@ This software generates a library of DNA sequence cassettes that contain all pos
 2. Create the conda environment containing packages needed to run the software: 
  `conda env create -f environment.yml`
 
-3. Run the App 
+3. Run the App: 
    Ensure the app is run from the cassettecrafter directory
    python3 GUI/app_script.py
 
-4. Open Web App
+5. Open Web App:
    Open a web browser and go to http://127.0.0.1:5000
 
 ### For command line usage, see [Command Line Instructions:](./commandlineinstructions.md)
