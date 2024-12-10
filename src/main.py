@@ -63,9 +63,7 @@ def generate_assembly_library(gene, mutations, enzyme_name, min_oligo_size, max_
     library_df = generate_mutant_lib(starting_dna,mutations_df, name)
 
     # 4. Replace any unwanted enzyme sites
-    # print(library_df["DNA"])
-
-    # replace_enzyme_sites_in_dataframe(library_df, enzyme_data, enzyme_name)
+    # # This is going to make the naming of the sequences weird, will need to fix this
 
     # 4.1 check degenerate codons for sites
 
@@ -89,9 +87,17 @@ def generate_assembly_library(gene, mutations, enzyme_name, min_oligo_size, max_
 
     final_df = process_dna_sequences(cassettes_df, enzyme, min_oligo_size)
 
+    return final_df
+    # final_df.set_index("index", inplace=True)  # Ensure there's an index column
+
+    # # Extract only columns starting with "Cassette"
+    # cassette_columns = [col for col in final_df.columns if col.startswith("Cassette")]
+
+    # filtered_df = final_df[cassette_columns]
+
     # print(final_df) # export to csv in a way that pushes to the website
 
-    return final_df
+    # return filtered_df
 
 def parseargs():
     parser=argparse.ArgumentParser(
