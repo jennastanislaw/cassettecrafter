@@ -6,6 +6,7 @@ import pandas as pd
 
 # Add the src directory to the Python path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../src')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../src/utils')))
 
 from process_inputs_utils import (
     get_gene_name,

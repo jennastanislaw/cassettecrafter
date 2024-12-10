@@ -37,7 +37,7 @@ Functions:
 from Bio.Seq import Seq
 import random
 import numpy as np
-from .enzyme_site_replacement_utils import find_matching_sites, load_enzymes_from_csv, create_enzyme_dict
+from utils.enzyme_site_replacement_utils import find_matching_sites, load_enzymes_from_csv, create_enzyme_dict
 
 
 def generate_random_dna(n):

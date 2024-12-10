@@ -29,7 +29,8 @@ Functions:
 
 from itertools import product
 # from src.enzyme_site_replacement_utils import find_matching_sites
-from .enzyme_site_replacement_utils import find_matching_sites
+#from .enzyme_site_replacement_utils import find_matching_sites
+from utils.enzyme_site_replacement_utils import find_matching_sites
 
 
 # A dictionary mapping IUPAC codes to possible base sets

@@ -4,6 +4,7 @@ import pytest
 
 # Add the src directory to the Python path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../src')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../src/utils')))
 
 from generate_mutant_lib_utils import (
     # make_mut_dict, # in intergation tests
