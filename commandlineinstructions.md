@@ -43,10 +43,11 @@ To run an example from the `cassettecrafter` directory (parent directory of `src
       |4       |E, H, Y, D|
       |16      |A, G, P   |
       |27      |E, R, H   |
+      
  
 ### Enzyme Data
 * Information about restriction enzymes used for Golden Gate Assembly is contained in a csv file. Can contain data about multiple enzymes, but only one will be used for inserting recognition and cut sites into the provided gene, based on the user-provided enzyme name. The file available from this repository has information for a number of common enzymes, but users can specify additional enzyme information if necessary. Information should be provided as a csv with a header row, and the following columns: Enzyme,Fwd_recognition_site,Rev_recognition_site,spacer_length,OH_length
-    * cassettecrafter/test_data/enzyme_sites.csv
+    * cassettecrafter/test_data/enzyme_sites.csv  
       Example Formatting:
       |Enzyme|Fwd_recognition_site|Rev_recognition_site|spacer_length|OH_length|
       |------|--------------------|--------------------|-------------|---------|
