@@ -1,4 +1,4 @@
-# CassetteCrafter - Command Line Usage
+# CassetteCrafter - Command Line Instructions
 CassetteCrafter automates the creation of DNA sequence libraries containing all combinations of desired mutations, formatted for Golden Gate Assembly workflows.
 
 ## Installation and Setup
