@@ -36,6 +36,7 @@ To run an example from the `cassettecrafter` directory (parent directory of `src
     * cassettecrafter/test_data/LY011_test_seq_single.fa
     * cassettecrafter/test_data/LY011_test_seq_single.csv
 * mutations : Allowed mutations can currently only be provided as a csv, with a header row. The first column should correspond to the position in the amino acid sequence (1-indexed), and the second column should contain a string of allowed amino acids mutations at that positions, separated by commas.  
+* 
 **Example Formatting:**
   
 | Position | Amino Acids |
@@ -50,20 +51,19 @@ To run an example from the `cassettecrafter` directory (parent directory of `src
 ### Enzyme Data
 * Information about restriction enzymes used for Golden Gate Assembly is contained in a csv file. Can contain data about multiple enzymes, but only one will be used for inserting recognition and cut sites into the provided gene, based on the user-provided enzyme name. The file available from this repository has information for a number of common enzymes, but users can specify additional enzyme information if necessary.
 * Information should be provided as a csv with a header row, and the following columns:  
-  Enzyme, Fwd_recognition_site, Rev_recognition_site, spacer_length, OH_length   
-  
-      **Example Formatting:**
-  
-| Enzyme | Fwd_recognition_site | Rev_recognition_site | Spacer Length | OH Length |
-|--------|-----------------------|----------------------|---------------|-----------|
-| BbsI   | GAAGAC               | GTCTTC               | 2             | 4         |
-| PaqCI  | CACCTGC              | GTGGACG              | 4             | 4         |
+  Enzyme, Fwd_recognition_site, Rev_recognition_site, spacer_length, OH_length  
+
+* 
+
+    **Example Formatting:**
+
+    | Enzyme | Fwd_recognition_site | Rev_recognition_site | Spacer Length | OH Length |
+    |--------|-----------------------|----------------------|---------------|-----------|
+    | BbsI   | GAAGAC               | GTCTTC               | 2             | 4         |
+    | PaqCI  | CACCTGC              | GTGGACG              | 4             | 4         |
 
 **File Location:**  
 - `cassettecrafter/test_data/enzyme_sites.csv`
-  
-  
-  
      
   * cassettecrafter/test_data/enzyme_sites.csv
   *  - spacer_length: The number of bases between the recognition sites and the start of the cut site.
