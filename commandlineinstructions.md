@@ -29,7 +29,7 @@ Usage:  `python3 main.py -u [allowed mutations file] -e [restriction enzyme name
 or  
 `python3 main.py --mutations [allowed mutations file] --enzyme_name [restriction enzyme name] --min_oligo_size [minimum oligo size] --max_oligo_size [maximum oligo size] --gene_file [file with starting gene sequence]`
 
-To run an example from the `cassettecrafter` directory (parent directory of `src`):`python3 main.py -m ./test_data/demo_mutation_list.csv -f ./test_data/LY011_test_seq_single.csv`
+To run an example from the `cassettecrafter` directory (parent directory of `src`):`python3 src/main.py -u ./test_data/demo_mutation_list.csv -f ./test_data/LY011_test_seq_single.csv -M 50 -m 30`
 
 ### Proper formatting of input:
 * gene_file : Gene sequence (currently a codon sequence) can be provided as a fasta file in the traditional format or a csv without a header, with each row formatted as [gene_name],[DNA_sequence]
