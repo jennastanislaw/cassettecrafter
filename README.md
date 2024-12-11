@@ -4,6 +4,8 @@ CassetteCrafter automates the creation of DNA sequence libraries containing all 
 
 This software generates a library of DNA sequence cassettes that contain all possible combinations of specified mutations, with the necessary recognition sequences for Golden Gate Assembly. A user provided starting sequence is used to generate a library of mutant sequences. These sequences are then split into cassettes with optimized overhangs to fit oligo length requirements. The user chooses which Type IIs enzyme will be used for plasmid construction, and recognition sites are added onto the ends of each cassette. If neccessary, additional bases are added to meet length requirements.
 
+For more information on cloning terminology and techniques, see [Traditional Cloning Basics from ThermoFisher](https://www.thermofisher.com/us/en/home/life-science/cloning/cloning-learning-center/invitrogen-school-of-molecular-biology/molecular-cloning/cloning/traditional-cloning-basics.html) 
+
 ## Project Structure
 
 - `app_script.py`: Main Flask app script with routes and backend processing.
