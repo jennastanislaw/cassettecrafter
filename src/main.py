@@ -3,13 +3,11 @@ From provided sequence and allowed mutations, produces a library of sequences
 that contain all combinations of the desired mutations that are compatible with 
 Golden Gate Assembly
 
-Usage: python3 main.py -m [allowed mutations file] -b [plasmid backbone] 
-        -e [restriction enzyme name] -d [file with enzyme data] 
-        -m [minimum oligo size] -f [file with genes to insert]
+Usage: python3 main.py -f [gene to insert] -u [allowed mutations file]  
+        -e [restriction enzyme name] -m [minimum oligo size]  -M [minimum oligo size] 
 
-Example: python3 src/main.py -m ./test_data/demo_mutation_list.csv 
-                -f ./test_data/LY011_test_seq_single.csv
-    When run from the directory above src. Adjust paths as needed
+Example: python3 src/main.py -f ./test_data/LY011_test_seq_single.csv 
+    -u ./test_data/demo_mutation_list.csv -M 50 -m 30
 
 """
 
@@ -32,18 +30,18 @@ def generate_assembly_library(gene, mutations, enzyme_name, min_oligo_size, max_
         combinations of allowed mutations 
 
     Args:
-        gene_file (str): Path to file containing genes to be inserted. Can be a fasta or csv
+        gene (str): Either path to file containing genes to be inserted as fasta or csv
+                    OR a string of the sequence. Can be a DNA or an amino acid sequence
         mutations (str): Path to csv file with mutation information
-        enzyme_data (str): Path to file containing enzyme information
         enzyme_name (str): Name of enzyme whose recognition sites should be incorporated
                     into the genes. Note this name must match the name in the 
-                    enzyme_data file
+                    enzyme_data file (located at src/data/enzyme_sites.csv)
         min_oligo_size (int): Minimum oligo size required for each DNA sequence
+        max_oligo_size (int): Maximum oligo size required for each DNA sequence
 
     Returns:
         DataFrame : Pandas DataFrame containing mutation name and sequence
     """
-    # enzyme_fp = './data/enzyme_sites.csv'
     enzyme_data = f'{os.path.dirname(__file__)}/data/enzyme_sites.csv'
 
     # 1. Create enzyme object
@@ -63,19 +61,15 @@ def generate_assembly_library(gene, mutations, enzyme_name, min_oligo_size, max_
     library_df = generate_mutant_lib(starting_dna,mutations_df, name)
 
     # 4. Replace any unwanted enzyme sites
-    # # This is going to make the naming of the sequences weird, will need to fix this
 
     # 4.1 check degenerate codons for sites
-
     valid_mixed_bases = degen_codon_checker(library_df, enzyme)
 
     # 4.2 replace sites
-
     rec_sites_removed = remove_enzyme_sites(enzyme, valid_mixed_bases)
 
     # 5. Find split sites
     reference = rec_sites_removed['rec_sites_removed'].iloc[0]
-
     sequences = rec_sites_removed['rec_sites_removed'].tolist()
 
     split_sites = find_split_indices(reference, sequences, min_oligo_size, max_oligo_size, enzyme)
@@ -84,7 +78,6 @@ def generate_assembly_library(gene, mutations, enzyme_name, min_oligo_size, max_
     cassettes_df = generate_cassettes(rec_sites_removed, split_sites, enzyme)
 
     # 7. Final sequence processing (add terminal enzyme sites and extra bases if needed)
-
     final_df = process_dna_sequences(cassettes_df, enzyme, min_oligo_size)
 
     # Assuming final_df is your DataFrame
@@ -95,8 +88,6 @@ def generate_assembly_library(gene, mutations, enzyme_name, min_oligo_size, max_
     cassette_columns = [col for col in final_df.columns if col.startswith("Cassette")]
 
     filtered_df = final_df[cassette_columns]
-
-    # print(filtered_df) # TODO: export to csv in a way that pushes to the website?
 
     return filtered_df
 
@@ -109,7 +100,11 @@ def parseargs():
 
     parser.add_argument('--gene_file','-f', type=str,
                         default='',
-                        help='File containing gene to insert')
+                        help="""Sequence of gene to mutate for Golden Gate. Usually 
+                                provided as a fasta file or a csv but can also be a string.
+                                Note that the sequence can be DNA or protein, but 
+                                DNA is recommended as this program does not allow
+                                for organism-specific codon optimization""")
     parser.add_argument('--mutations','-u', type=str,
                         default='', required=True,
                         help="""File containing mutations for genes. Should contain 

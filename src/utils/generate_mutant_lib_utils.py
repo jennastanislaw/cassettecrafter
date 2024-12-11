@@ -1,4 +1,12 @@
-from data.dna_aa_definitions import CODON_TABLE_DNA, CODON_TO_AMINO_ACID_DNA, MIXED_BASES, MIXED_BASES_COMBO_TO_BASE
+""" 
+Contains helper functions for the generate_mutant_lib_utils module. All of these
+functions therefore relate to processing information from the mutation
+dataframe.
+
+See individual functions for more details
+"""
+
+from data.dna_aa_definitions import CODON_TO_AMINO_ACID_DNA, MIXED_BASES
 
 def make_mut_dict(editable_codon_seq, all_combinations, name, mutations_df):
     """From a list of mutation combinations, generate a dictionary containing 
@@ -23,6 +31,19 @@ def make_mut_dict(editable_codon_seq, all_combinations, name, mutations_df):
     """
     mut_library = dict()
     positions=mutations_df.index.tolist() # positions where mut can be make
+
+    # Check inputs
+    if type(editable_codon_seq) != list:
+        raise TypeError("Codon sequence must be a list of codons")
+    elif type(all_combinations) != list:
+        raise TypeError("Codon combinations must be a list of tuples")
+    elif type(name) != str:
+        raise TypeError("Name of gene must be a string")
+    else:
+        max_pos = sorted(positions)[-1]
+        if len(editable_codon_seq) < max_pos:
+            raise IndexError("Position where mutations are allowed is not within range of sequence")
+    
 
     # Loop over each combination
     for combo in all_combinations:

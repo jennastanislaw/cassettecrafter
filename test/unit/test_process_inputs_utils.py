@@ -9,10 +9,12 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../s
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../src/utils')))
 
 from process_inputs_utils import (
+    # read_gene_input_from_file, # in integrated tests
     get_gene_name,
     get_seq,
     biopython_seq_from_str,
     convert_aa_to_dna,
+    # mutation_file_to_df, # in integrated tests
     split_csl,
     #get_allowed_codon_list, #in integrated tests
     add_mixed_bases_and_combine,

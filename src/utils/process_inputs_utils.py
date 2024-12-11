@@ -1,9 +1,47 @@
-import copy
-from Bio.Seq import Seq
-from data.dna_aa_definitions import CODON_TABLE_DNA, CODON_TO_AMINO_ACID_DNA, MIXED_BASES, MIXED_BASES_COMBO_TO_BASE
+"""
+Contains helper functions for the process_inputs module. All of these
+functions therefore relate to appropriately processing information from user-provided
+inputs. These functions can generally be divided into two categories:
 
-### Helper functions for read_input ###
-# Get name from te fasta or csv
+1) Functions which help read in the input DNA or protein sequence and 
+    convert it to a BioPython Sequence 
+2) Functions which read the mutation information from the provided csv, and
+    process the information provided. This also involves identification of 
+    allowed codons based on allowed mutations and incorporation of mixed bases
+    (aka degenerate codons) where possible.
+
+See individual functions for more details
+"""
+import copy
+import os
+from Bio.Seq import Seq
+import pandas as pd
+from data.dna_aa_definitions import CODON_TABLE_DNA, CODON_TO_AMINO_ACID_DNA, MIXED_BASES_COMBO_TO_BASE
+
+### Reading in sequence ###
+def read_gene_input_from_file(file):
+    """Extract gene name and sequence from input file
+
+    Args:
+        file (str):  Path to file containing genes to be inserted. Can be a fasta or csv
+
+    Returns:
+        tuple (name, seq): tuple with gene name and initial gene sequence (DNA)
+    """
+    if type(file) != str:
+        raise TypeError(f"Gene file must be a string")
+    filetype=str(file).split("/")[-1].split(".")[-1]
+
+    #check this is a file
+    if not os.path.isfile(file):
+        raise ValueError("Gene file provide must be the path to an existing file")
+    file_lines = open(file,"r").readlines()
+
+    name = get_gene_name(file_lines,filetype)
+
+    seq = get_seq(file_lines,filetype)
+    return name, seq
+
 def get_gene_name(lines,filetype):
     """Get gene name from the first column of csv, or the first line of a fasta
 
@@ -68,13 +106,12 @@ def biopython_seq_from_str(str_seq):
     """
     assert type(str_seq) == str, f"The sequence much be a string, not a(n) {type(str_seq).__name__}"
     
-    #make it a biopython sequence for processing later
+    # Make it a biopython sequence for processing later
     str_seq = str_seq.upper()
     seq_obj = Seq(str_seq)
 
-    bases={"A","C","G","T"}
-
     # If this is not a DNA sequence, convert it 
+    bases={"A","C","G","T"}
     if not set(str_seq).issubset(bases):
         dna_seq = convert_aa_to_dna(seq_obj._data)
         seq_obj = Seq(dna_seq)
@@ -110,8 +147,55 @@ def convert_aa_to_dna(prot_seq, codon_library=CODON_TABLE_DNA):
             raise ValueError(f"Invalid amino acid: {aa}")
     
     return dna_seq
+### Reading in sequence END ###
 
-# Take comma separated list and return split list of strings
+### Reading in and processing the mutation file ###
+def mutation_file_to_df(mutations, og_seq_dna):
+    """Generates a dataframe with information about the allowed mutations
+
+    Args:
+        mutations (str): Path to csv file with mutation information
+        og_seq_dna (BioPython Seq): BioPython Seq object containing information
+            about the original DNA sequence of the gene
+
+    Returns:
+        pandas DataFrame : dataframe containing data from the original csv and
+            additional columns containng details about each mutatable position: 
+            [original - original amino acide, codons_original - original codon,
+            allowed - list of allowed amino acids at that position,
+            codons_allowed - list of allowed codons at that position (corresponds 
+            to allowed amino acids)]
+    """
+    if type(og_seq_dna) != Seq:
+        raise TypeError("""DNA sequence for generating mutation dataframe must be 
+                        BioPython Sequence object.""")
+    og_seq_aa = og_seq_dna.translate()  # built-in biopython function
+
+    if type(mutations) != str or mutations.split(".")[-1] != "csv":
+        raise TypeError("Mutation data must be provided as a path to a csv.")
+    # Read in mutation file
+    mutation_df = pd.read_csv(mutations,index_col=0)
+
+    # Add column that is list of mutations
+    mutation_df["mut_list"] = mutation_df.iloc[:,0].apply(split_csl)
+
+    og_aa = list()
+    og_codon = list()
+    for pos in mutation_df.index.tolist():
+        pos_i = pos - 1 #adjsut pos because mutation indexing starts at 1, not 0
+        og_aa.append(og_seq_aa[pos_i])
+        og_codon.append("".join(og_seq_dna[3*pos_i:3*(pos_i+1)]))
+    mutation_df["original"] = og_aa
+    mutation_df["codons_original"] = og_codon
+
+    mutation_df["allowed"] = mutation_df.apply(lambda row: row['mut_list'] + [row['original']], axis=1)
+
+    # Add current codons and allowed codons (selecting the first one on the list)
+    mutation_df["codons_allowed"] = get_allowed_codon_list(mutation_df["mut_list"].tolist(),
+                                     mutation_df["codons_original"].tolist())
+    
+    return mutation_df
+
 def split_csl(csl):
     """Splits an input string that contains commas into a list of string, 
         where each item in the list correponds a value in the original string list
@@ -137,9 +221,9 @@ def get_allowed_codon_list(mutations_aa, original_codons):
         allowed mutations
 
     Args:
-        mutations_aa (Pandas Series): columns from Pandas DataFrame which contains a list
+        mutations_aa (list): column from Pandas DataFrame which contains a list
             of allowed amino acid mutations for each row (position in the sequence)
-        original_codons (Pandas Series): columns from Pandas DataFrame which contains 
+        original_codons (list): column from Pandas DataFrame which contains 
             the original codon that the corresponding position
 
     Returns:
@@ -149,6 +233,11 @@ def get_allowed_codon_list(mutations_aa, original_codons):
             also possible to have no mutation at a given position
     """
     output=list()
+
+    if type(mutations_aa) != list or type(original_codons) != list:
+        raise TypeError("Allowed mutations (amino acid) and original codon should be formatted a list")
+    elif len(mutations_aa) != len(original_codons):
+        raise ValueError("Allowed mutation list and original codon list must be the same length.")
 
     # For each positions's possible mutations, convert the list of amino acids
     # to a list of codons
@@ -165,11 +254,14 @@ def get_allowed_codon_list(mutations_aa, original_codons):
         # Append list of allowed mutation codons and the original codon to output
         allowed_codons_at_pos.append(original_codon)
 
+        # Check for mixed bases where possible. See functions defined below for
+        # more details and examples
         final_allowed_codon_list = add_mixed_bases_and_combine(allowed_codons_at_pos)
         output.append(final_allowed_codon_list)
 
     return output
 
+### Processing mutation data by checking for possible incorporation of mixed bases ###
 def add_mixed_bases_and_combine(allowed_codons_at_pos):
     """Accepts an input that consists of codons mapping to allowed mutations and
         checks this list to see if there are any codons that can be combined
@@ -189,23 +281,23 @@ def add_mixed_bases_and_combine(allowed_codons_at_pos):
     modifiable_allowed_codon_list = copy.deepcopy(allowed_codons_at_pos)
     if type(allowed_codons_at_pos) != list:
         raise TypeError("Allowed codons must be a list of strings")
-    if len(allowed_codons_at_pos) == 0: #Return empty list if not mutations
+    if len(allowed_codons_at_pos) == 0: #Return empty list if no mutations
         return []
     # Return the single mutation if there is only one
     # Need to capture edge case here, otherwise will throw error later
     elif len(allowed_codons_at_pos) < 1: 
         return allowed_codons_at_pos
     for i, curr_codon in enumerate(allowed_codons_at_pos[:-1]):
-        curr_codon_mod = check_leu_arg_ser(curr_codon)
+        curr_codon_mod = check_leu_arg_ser(curr_codon)  # Check for edge cases
         base_1_2 = curr_codon_mod[:2]
 
         # Compare beginning of current codon to those in the allowed codons list
         for j, match_codon in enumerate(allowed_codons_at_pos[i+1:]):
-            match_codon_mod = check_leu_arg_ser(match_codon)
+            match_codon_mod = check_leu_arg_ser(match_codon) # Check for edge cases
             match_first_two = match_codon_mod[:2]
 
             # If there is a match, find the mixed base that fits both codons
-            if match_first_two == base_1_2: # add something for special cases: ARG (R) and LEU (L)
+            if match_first_two == base_1_2:
                 mixed_base_codon = get_mixed_base_codon(curr_codon_mod, match_codon_mod)
                 if mixed_base_codon[:2] != base_1_2:
                     mixed_base_codon = base_1_2 + mixed_base_codon[-1]
@@ -269,8 +361,7 @@ def check_leu_arg_ser(codon):
         Leu must be encoded by TTA or TTG for it to share the first two
         bases with Phe. Therefore, we may need to modify the codon being used
         to check if there is a possibiity to use a mixed base which encodes two
-        possible amino acids at the same position 
-        )
+        possible amino acids at the same position)
 
     Args:
         codon (str): three letter codon 
@@ -296,3 +387,5 @@ def check_leu_arg_ser(codon):
     else:
         new_codon = codon
     return new_codon
+### Processing mutation data by checking for possible incorporation of mixed bases END ###
+### Reading in and processing the mutation file END ###
