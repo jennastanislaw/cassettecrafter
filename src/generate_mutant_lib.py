@@ -21,7 +21,7 @@ the mutant (as shown in parentheses above) linked to the DNA sequence of that mu
 
 import pandas as pd
 import itertools
-from generate_mutant_lib_utils import split_to_codons, make_mut_dict
+from utils.generate_mutant_lib_utils import split_to_codons, make_mut_dict
 
 
 def generate_mutant_lib(og_codon_seq,mutations_df, name):
