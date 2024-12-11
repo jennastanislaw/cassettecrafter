@@ -36,7 +36,8 @@ To run an example from the `cassettecrafter` directory (parent directory of `src
     * cassettecrafter/test_data/LY011_test_seq_single.fa
     * cassettecrafter/test_data/LY011_test_seq_single.csv
 * mutations : Allowed mutations can currently only be provided as a csv, with a header row. The first column should correspond to the position in the amino acid sequence (1-indexed), and the second column should contain a string of allowed amino acids mutations at that positions, separated by commas.
-**Example Formatting:**  
+**Example Formatting:**
+  
 | Position | Amino Acids |
 |----------|-------------|
 | 4        | E, H, Y, D  |
@@ -52,10 +53,12 @@ To run an example from the `cassettecrafter` directory (parent directory of `src
   Enzyme, Fwd_recognition_site, Rev_recognition_site, spacer_length, OH_length  
   
       Example Formatting:
+  
       |Enzyme|Fwd_recognition_site|Rev_recognition_site|spacer_length|OH_length|
       |------|--------------------|--------------------|-------------|---------|
       |BbsI  |GAAGAC              |GTCTTC              |2            |4        |
       |PaqCI |CACCTGC             |GTGGACG             |4            |4        |
+  
   
   
      
