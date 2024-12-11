@@ -12,7 +12,7 @@ Example: python3 src/main.py -f ./test_data/LY011_test_seq_single.csv
 """
 
 import argparse
-import os
+import os 
 import pandas as pd
 
 from process_inputs import process_inputs
