@@ -1,4 +1,6 @@
 # cassettecrafter
+This software is intended to generate a library of mutant gene sequences that can be assembled using Golden Gate assembly. 
+
 This software generates a library of DNA sequence cassettes that contain all possible combinations of specified mutations, with the necessary recognition sequences for Golden Gate Assembly. A user provided starting sequence is used to generate a library of mutant sequences. These sequences are then split into cassettes with optimized overhangs to fit oligo length requirements. The user chooses which Type IIs enzyme will be used for plasmid construction, and recognition sites are added onto the ends of each cassette. If neccessary, additional bases are added to meet length requirements.
 
 ## Project Structure
@@ -48,6 +50,19 @@ This software generates a library of DNA sequence cassettes that contain all pos
    Open a web browser and go to http://127.0.0.1:5000
 
 ### For command line usage, see [Command Line Instructions:](./commandlineinstructions.md)
+
+## Golden Gate Assembly 
+
+Golden Gate assembly is a cloning technique used to do scar-less DNA sequence assembly using Type IIs restriction enzymes. These enzymes have cut sites outside of their recognition sequences, allowing for a final construct that does not contain enzyme recognition sites. 
+
+<insert picture here> 
+
+More information on Golden Gate assembly can be found here: 
+
+[SnapGene](https://www.snapgene.com/guides/golden-gate-assembly)
+[Addgene](https://blog.addgene.org/plasmids-101-golden-gate-cloning) 
+
+
 
 
 
