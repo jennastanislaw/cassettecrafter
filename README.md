@@ -1,5 +1,5 @@
 # cassettecrafter
-This software is intended to generate a library of mutant gene sequences that can be assembled using Golden Gate assembly. 
+This software is intended to generate a library of mutant gene sequences that can be assembled via Golden Gate assembly. 
 
 This software generates a library of DNA sequence cassettes that contain all possible combinations of specified mutations, with the necessary recognition sequences for Golden Gate Assembly. A user provided starting sequence is used to generate a library of mutant sequences. These sequences are then split into cassettes with optimized overhangs to fit oligo length requirements. The user chooses which Type IIs enzyme will be used for plasmid construction, and recognition sites are added onto the ends of each cassette. If neccessary, additional bases are added to meet length requirements.
 
@@ -36,17 +36,17 @@ This software generates a library of DNA sequence cassettes that contain all pos
   
 ### Setup
 
-1. Clone the repository:
+1. Clone the repository:  
    `git clone <https://github.com/yourusername/cassettecrafter.git>`
 
-2. Create the conda environment containing packages needed to run the software: 
+2. Create the conda environment containing packages needed to run the software:   
  `conda env create -f environment.yml`
 
-3. Run the App: 
+3. Run the App:  
    Ensure the app is run from the cassettecrafter directory
    `python3 GUI/app_script.py`
 
-5. Open Web App:
+5. Open Web App:  
    Open a web browser and go to http://127.0.0.1:5000
 
 ### For command line usage, see [Command Line Instructions:](./commandlineinstructions.md)
@@ -57,10 +57,10 @@ Golden Gate assembly is a cloning technique used to do scar-less DNA sequence as
 
 <insert picture here> 
 
-More information on Golden Gate assembly can be found here: 
+More information on Golden Gate assembly can be found here:  
 
-[SnapGene](https://www.snapgene.com/guides/golden-gate-assembly)
-[Addgene](https://blog.addgene.org/plasmids-101-golden-gate-cloning) 
+[Golden Gate Assembly](https://www.snapgene.com/guides/golden-gate-assembly)
+[Plasmids 101: Golden Gate Cloning](https://blog.addgene.org/plasmids-101-golden-gate-cloning) 
 
 
 
