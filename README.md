@@ -1,5 +1,6 @@
-# cassettecrafter
-This software is intended to generate a library of mutant gene sequences that can be assembled via Golden Gate assembly. 
+# CassetteCrafter
+CassetteCrafter automates the creation of DNA sequence libraries containing all combinations of desired mutations, formatted for Golden Gate Assembly workflows.  
+
 
 This software generates a library of DNA sequence cassettes that contain all possible combinations of specified mutations, with the necessary recognition sequences for Golden Gate Assembly. A user provided starting sequence is used to generate a library of mutant sequences. These sequences are then split into cassettes with optimized overhangs to fit oligo length requirements. The user chooses which Type IIs enzyme will be used for plasmid construction, and recognition sites are added onto the ends of each cassette. If neccessary, additional bases are added to meet length requirements.
 
