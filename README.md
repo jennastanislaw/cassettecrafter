@@ -55,7 +55,9 @@ This software generates a library of DNA sequence cassettes that contain all pos
 
 Golden Gate assembly is a cloning technique used to do scar-less DNA sequence assembly using Type IIs restriction enzymes. These enzymes have cut sites outside of their recognition sequences, allowing for a final construct that does not contain enzyme recognition sites. 
 
-<insert picture here> 
+![Type IIP vs IIs](./Restriction_enzyme_cuts.png)  
+![Golden Gate Assembly](./Golden_Gate_multi-insert_diagram.png) 
+(Images via [SnapGene](https://www.snapgene.com/guides/golden-gate-assembly))
 
 More information on Golden Gate assembly can be found here:  
 
