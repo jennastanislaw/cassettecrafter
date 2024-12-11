@@ -59,7 +59,7 @@ Golden Gate assembly is a cloning technique used to do scar-less DNA sequence as
 
 More information on Golden Gate assembly can be found here:  
 
-[Golden Gate Assembly](https://www.snapgene.com/guides/golden-gate-assembly)
+[Golden Gate Assembly](https://www.snapgene.com/guides/golden-gate-assembly)  
 [Plasmids 101: Golden Gate Cloning](https://blog.addgene.org/plasmids-101-golden-gate-cloning) 
 
 
