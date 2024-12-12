@@ -1,5 +1,12 @@
-# from dna_aa_definitions import CODON_TO_AMINO_ACID_DNA
-from dna_aa_definitions import CODON_TABLE_DNA, CODON_TO_AMINO_ACID_DNA, MIXED_BASES, MIXED_BASES_COMBO_TO_BASE
+""" 
+Contains helper functions for the generate_mutant_lib_utils module. All of these
+functions therefore relate to processing information from the mutation
+dataframe.
+
+See individual functions for more details
+"""
+
+from data.dna_aa_definitions import CODON_TO_AMINO_ACID_DNA, MIXED_BASES
 
 def make_mut_dict(editable_codon_seq, all_combinations, name, mutations_df):
     """From a list of mutation combinations, generate a dictionary containing 
@@ -25,6 +32,19 @@ def make_mut_dict(editable_codon_seq, all_combinations, name, mutations_df):
     mut_library = dict()
     positions=mutations_df.index.tolist() # positions where mut can be make
 
+    # Check inputs
+    if type(editable_codon_seq) != list:
+        raise TypeError("Codon sequence must be a list of codons")
+    elif type(all_combinations) != list:
+        raise TypeError("Codon combinations must be a list of tuples")
+    elif type(name) != str:
+        raise TypeError("Name of gene must be a string")
+    else:
+        max_pos = sorted(positions)[-1]
+        if len(editable_codon_seq) < max_pos:
+            raise IndexError("Position where mutations are allowed is not within range of sequence")
+    
+
     # Loop over each combination
     for combo in all_combinations:
         mut_name=name #start building up name for mutant
@@ -36,7 +56,7 @@ def make_mut_dict(editable_codon_seq, all_combinations, name, mutations_df):
             # Check if this combo contains a mutation from the original amino acid
             og_aa = mutations_df.loc[pos,"original"]
 
-            #TODO: move this naming to end?
+            #Special case for naming mutations encoded by mixed base codons
             last_base = combo[i][-1]
             if last_base not in "ACGT":
                 codon1 = combo[i][:2] + MIXED_BASES[last_base][0]
@@ -56,7 +76,8 @@ def make_mut_dict(editable_codon_seq, all_combinations, name, mutations_df):
     return mut_library
 
 def split_to_codons(dna_seq):
-    """Split a DNA sequence to a list of codons
+    """Split a DNA sequence to a list of codons by dividing it into fragments
+        of length 3
 
     Args:
         dna_seq (str): string containing DNA sequence
@@ -65,10 +86,13 @@ def split_to_codons(dna_seq):
         list: list of strings, where each item in the list corresponds to one 
             codon (set of 3 base pairs) from the input sequence
     """
-    codon_list = [] # output list
+    if type(dna_seq) != str:
+        raise TypeError("DNA sequence must be a string") 
+    elif len(dna_seq) % 3 != 0:
+        # check that length of sequence is divisible by 3
+        raise ValueError("Sequence must have a length that is a multiple of 3.")
 
-    # check that length of sequence is divisible by 3
-    assert len(dna_seq) % 3 == 0, "Sequence must have a length that is a multiple of 3."
+    codon_list = [] # output list
 
     # Iterate over the sequence in steps of 3 to get codons
     for i in range(0, len(dna_seq), 3):

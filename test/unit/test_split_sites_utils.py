@@ -24,7 +24,9 @@ import sys
 import os
 import pandas as pd
 
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../src/utils')))
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../src')))
+
 from split_sites_utils import (
     find_starts_of_consecutive_indices,
     adjust_oligo_lengths,

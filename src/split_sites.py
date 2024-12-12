@@ -22,9 +22,11 @@ Dependencies:
 
 """
 
-from src.split_sites_utils import (calculate_oligo_lengths, adjust_oligo_lengths, is_valid_overhang, hamming_distance,
-                                   find_constant_indices)
-from src.split_sites_utils import find_starts_of_consecutive_indices
+# from src.split_sites_utils import (calculate_oligo_lengths, adjust_oligo_lengths, is_valid_overhang, hamming_distance,
+#                                    find_constant_indices)
+# from src.split_sites_utils import find_starts_of_consecutive_indices
+from utils.split_sites_utils import (calculate_oligo_lengths, adjust_oligo_lengths, is_valid_overhang, hamming_distance, find_starts_of_consecutive_indices, find_constant_indices)
+#from split_sites_utils import find_starts_of_consecutive_indices
 from itertools import combinations
 import math
 

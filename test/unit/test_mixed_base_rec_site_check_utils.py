@@ -17,6 +17,7 @@ import os
 import pytest
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../src')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../src/utils')))
 
 from mixed_base_rec_site_check_utils import (
     expand_dna_sequence,

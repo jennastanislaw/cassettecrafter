@@ -25,7 +25,7 @@ Dependencies:
 """
 import pandas as pd
 from Bio.Seq import Seq
-from dna_aa_definitions import CODON_TABLE_DNA, CODON_TO_AMINO_ACID_DNA
+from data.dna_aa_definitions import CODON_TABLE_DNA, CODON_TO_AMINO_ACID_DNA
 
 
 class Enzyme:

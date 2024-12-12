@@ -17,7 +17,7 @@ Functions:
 
 
 import pandas as pd
-from mixed_base_rec_site_check_utils import (
+from utils.mixed_base_rec_site_check_utils import (
     expand_dna_sequence,
     check_recognition_sites_in_expanded_sequences,
     append_valid_sequences,
