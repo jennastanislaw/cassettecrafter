@@ -1,3 +1,8 @@
 ﻿Enzyme,Fwd_recognition_site,Rev_recognition_site,spacer_length,OH_length
 BbsI,GAAGAC,GTCTTC,2,4
-PaqCI,CACCTGC,GTGGACG,4,4
+PaqCI,CACCTGC,GCAGGTG,4,4
+SapI,GCTCTTC,GAAGAGC,1,3
+BsaI,GGTCTC,GAGACC,1,4
+BsmBI,CGTCTC,GAGACG,1,4
+
+
