@@ -42,11 +42,13 @@ For more information on cloning terminology and techniques, see [Traditional Clo
 1. Clone the repository:  
    `git clone https://github.com/jennastanislaw/cassettecrafter.git`
 
-2. Create the conda environment containing packages needed to run the software:   
+2. In the cassettecrafter directory, create the conda environment containing packages needed to run the software:   
  `conda env create -f environment.yml`
 
-3. Run the App:  
-   Ensure the app is run from the cassettecrafter directory
+3. Activate the environment
+   
+4. Run the App:  
+   From the cassettecrafter directory, run
    `python3 GUI/app_script.py`
 
 5. Open Web App:  
