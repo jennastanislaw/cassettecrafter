@@ -56,6 +56,14 @@ For more information on cloning terminology and techniques, see [Traditional Clo
 
 ### For command line usage, see [Command Line Instructions:](./commandlineinstructions.md)
 
+## Demo Instructions
+1. Upload the gene sequence file, demo file is located at `<cassette/crafter/parent/directory>/cassettecrafter/test_data/test_seq_single.csv`  
+2. Upload the mutation file, demo file is located at `<cassette/crafter/parent/directory>/cassettecrafter/test_data/demo_mutation_list.csv`
+3. Choose your enzyme, for the demo we use BbsI.
+4. Specify your minimum oligo size, for the demo we use 25.
+5. Specify your maximum oligo size, for the demo we use 100.
+   *Note: If your minimum and maximum oligo sizes are such that a large number of split sites (>7) are required, determining the locations of these split sites can take an extended ammount of time. 
+
 ## Golden Gate Assembly 
 
 Golden Gate assembly is a cloning technique used to do scar-less DNA sequence assembly using Type IIs restriction enzymes. These enzymes have cut sites outside of their recognition sequences, allowing for a final construct that does not contain enzyme recognition sites. 
