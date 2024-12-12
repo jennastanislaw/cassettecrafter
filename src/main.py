@@ -89,6 +89,10 @@ def generate_assembly_library(gene, mutations, enzyme_name, min_oligo_size, max_
 
     filtered_df = final_df[cassette_columns]
 
+    if filtered_df.empty:
+        raise ValueError(
+            "The resulting DataFrame is empty. No columns matching 'Cassette' were found or the data is missing.")
+
     return filtered_df
 
 def parseargs():
