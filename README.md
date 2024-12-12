@@ -62,7 +62,7 @@ For more information on cloning terminology and techniques, see [Traditional Clo
 3. Choose your enzyme, for the demo we use BbsI.
 4. Specify your minimum oligo size, for the demo we use 25.
 5. Specify your maximum oligo size, for the demo we use 100.  
-   - Note: If your minimum and maximum oligo sizes are such that a large number of split sites (>7) are required, determining the locations of these split sites can take an extended ammount of time. 
+- Note: If your minimum and maximum oligo sizes are such that a large number of split sites (>7) are required, determining the locations of these split sites can take an extended ammount of time. 
 
 ## Golden Gate Assembly 
 
