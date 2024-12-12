@@ -40,7 +40,7 @@ For more information on cloning terminology and techniques, see [Traditional Clo
 ### Setup
 
 1. Clone the repository:  
-   `git clone <https://github.com/yourusername/cassettecrafter.git>`
+   `git clone https://github.com/jennastanislaw/cassettecrafter.git`
 
 2. Create the conda environment containing packages needed to run the software:   
  `conda env create -f environment.yml`
