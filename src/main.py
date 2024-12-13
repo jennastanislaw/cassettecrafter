@@ -3,10 +3,10 @@ From provided sequence and allowed mutations, produces a library of sequences
 that contain all combinations of the desired mutations that are compatible with 
 Golden Gate Assembly
 
-Usage: python3 main.py -f [gene to insert] -u [allowed mutations file]  
-        -e [restriction enzyme name] -m [minimum oligo size]  -M [minimum oligo size] 
+Usage: python3 main.py -f [gene to insert] -u [allowed mutations file]
+        -e [restriction enzyme name] -m [minimum oligo size]  -M [minimum oligo size]
 
-Example: python3 src/main.py -f ./test_data/LY011_test_seq_single.csv 
+Example: python3 src/main.py -f ./test_data/LY011_test_seq_single.csv
     -u ./test_data/demo_mutation_list.csv -M 50 -m 30
 
 """
@@ -89,6 +89,10 @@ def generate_assembly_library(gene, mutations, enzyme_name, min_oligo_size, max_
 
     filtered_df = final_df[cassette_columns]
 
+    if filtered_df.empty:
+        raise ValueError(
+            "The resulting DataFrame is empty. No columns matching 'Cassette' were found or the data is missing.")
+
     return filtered_df
 
 def parseargs():
@@ -114,7 +118,7 @@ def parseargs():
                         default="BbsI", required=False,
                         help="""Enzyme name, matching name in the enzyme data file. Default is BbsI""")
     parser.add_argument("--min_oligo_size", "-m", type=int,
-                        default=20, required=True,
+                        default=25, required=True,
                         help="""Minimum oligo size required for each DNA sequence. Default 20""")
     parser.add_argument("--max_oligo_size", "-M", type=int,
                         default=100, required=True,
@@ -125,7 +129,7 @@ def parseargs():
 
 if __name__ == "__main__":
     args=parseargs()
-    
+
     # Main function
     generate_assembly_library(args.gene_file, args.mutations, args.enzyme_name,
                                args.min_oligo_size, args.max_oligo_size)
