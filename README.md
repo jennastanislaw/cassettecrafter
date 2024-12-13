@@ -6,27 +6,6 @@ This software generates a library of DNA sequence cassettes that contain all pos
 
 For more information on cloning terminology and techniques, see [Traditional Cloning Basics from ThermoFisher](https://www.thermofisher.com/us/en/home/life-science/cloning/cloning-learning-center/invitrogen-school-of-molecular-biology/molecular-cloning/cloning/traditional-cloning-basics.html) 
 
-## Project Structure
-
-- `app_script.py`: Main Flask app script with routes and backend processing.
-- `temp/`:
-   - Data files
-- `templates/`: 
-  - `index.html`: Input page for user data.
-  - `gg_assembly.html`: Information page.
-  - `result.html`: Result page for optimized sequence download.
-- `static/`: 
-  - Images used in the html files.
-- `Tests`: 
-   - `test_app_script.py`: Result page for optimized sequence download.
-
-## Program Flow
-
-1. **Input Page (`index.html`)**: Users input data for cassette generation.
-2. **Information Page (`gg_assembly.html`)**: Users can learn about the golden gate assembly process.
-3. **Backend Processing (`app_script.py`)**: Flask processes inputs and renders the result page with optimized sequence.
-4. **Result Page (`result.html`)**: Displays the optimized sequence with a download link 
-
 ## Installation and Setup
 
 ### Requirements
