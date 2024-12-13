@@ -23,9 +23,10 @@ from mixed_base_rec_site_check import degen_codon_checker
 from enzyme_site_replacement import remove_enzyme_sites
 from split_sites import (find_split_indices)
 from utils.split_sites_utils import generate_cassettes
+from process_output import process_output
 
 
-def generate_assembly_library(gene, mutations, enzyme_name, min_oligo_size, max_oligo_size):
+def generate_assembly_library(gene, mutations, enzyme_name, min_oligo_size, max_oligo_size, output):
     """Generates Golden Gate-compatible sequence library containing all possible
         combinations of allowed mutations 
 
@@ -38,6 +39,7 @@ def generate_assembly_library(gene, mutations, enzyme_name, min_oligo_size, max_
                     enzyme_data file (located at src/data/enzyme_sites.csv)
         min_oligo_size (int): Minimum oligo size required for each DNA sequence
         max_oligo_size (int): Maximum oligo size required for each DNA sequence
+        output (str): Path where output csv should be dumped.
 
     Returns:
         DataFrame : Pandas DataFrame containing mutation name and sequence
@@ -79,19 +81,7 @@ def generate_assembly_library(gene, mutations, enzyme_name, min_oligo_size, max_
 
     # 7. Final sequence processing (add terminal enzyme sites and extra bases if needed)
     final_df = process_dna_sequences(cassettes_df, enzyme, min_oligo_size)
-
-    # Assuming final_df is your DataFrame
-    final_df['Index'] = range(len(final_df))  # Create an index column with sequential numbers
-    final_df.set_index('Index', inplace=True)  # Set the new column as the index
-
-    # Extract only columns starting with "Cassette"
-    cassette_columns = [col for col in final_df.columns if col.startswith("Cassette")]
-
-    filtered_df = final_df[cassette_columns]
-
-    if filtered_df.empty:
-        raise ValueError(
-            "The resulting DataFrame is empty. No columns matching 'Cassette' were found or the data is missing.")
+    filtered_df = process_output(final_df, output)
 
     return filtered_df
 
@@ -123,6 +113,9 @@ def parseargs():
     parser.add_argument("--max_oligo_size", "-M", type=int,
                         default=100, required=True,
                         help="""Maximum oligo size required for each DNA sequence. Default 100""")
+    parser.add_argument("--output", "-o", type=str,
+                        default="", required=False,
+                        help="""Path to output csv. If not provided, then no csv will be dumped.""")
 
     args = parser.parse_args()
     return args
@@ -132,4 +125,4 @@ if __name__ == "__main__":
 
     # Main function
     generate_assembly_library(args.gene_file, args.mutations, args.enzyme_name,
-                               args.min_oligo_size, args.max_oligo_size)
+                               args.min_oligo_size, args.max_oligo_size, args.output)
