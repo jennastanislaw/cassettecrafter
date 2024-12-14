@@ -45,12 +45,11 @@ def generate_assembly_library(gene, mutations, enzyme_name, min_oligo_size, max_
         DataFrame : Pandas DataFrame containing mutation name and sequence
     """
     enzyme_data = f'{os.path.dirname(__file__)}/data/enzyme_sites.csv'
-
     # 1. Create enzyme object
     # enzyme_class_objs = load_enzymes_from_csv(enzyme_fp) # should this be enzyme_data? - yes
     enzyme_class_objs = load_enzymes_from_csv(enzyme_data)
     enzyme_dict = create_enzyme_dict(enzyme_class_objs)
-
+    print(enzyme_dict)
     enzyme = enzyme_dict.get(enzyme_name)
 
     if enzyme is None:
