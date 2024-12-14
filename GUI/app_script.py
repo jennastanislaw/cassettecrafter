@@ -76,7 +76,8 @@ def optimize():
         return redirect(url_for('result'))
     except Exception as e:
         return f"An error occurred: {str(e)}", 500
-
+    
+        
 # Define the gg_assembly route for the Golden Gate assembly info page
 @app.route('/gg_assembly')
 def gg_assembly():

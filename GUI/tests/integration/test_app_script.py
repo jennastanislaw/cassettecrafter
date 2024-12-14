@@ -17,6 +17,7 @@ import os
 
 # Add the GUI directory to the Python path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../test_data')))
 
 from app_script import app  # Now it should find app_script.py
 
@@ -44,9 +45,9 @@ def test_optimize_no_file(client):
 # Test if the file is uploaded, but the wrong file type
 def test_optimize_wrong_file_type(client):
     # Open the mock files
-    with open('../../../test_data/LY011_test_seq.csv', 'rb') as gene_file, \
-         open('../../../test_data/mixed_base_mut_list.csv', 'rb') as mutations_file:
-        # Create the data dictionary
+    # Create the data dictionary
+    with open('test_data/test_seq_single.csv', 'rb') as gene_file, \
+         open('test_data/mixed_base_mut_list.csv', 'rb') as mutations_file:
         data = {
             'enzyme_name': 'BbsI',
             'min_oligo_size': 20,

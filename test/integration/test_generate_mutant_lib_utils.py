@@ -1,3 +1,6 @@
+""" 
+Integration test for make_mut_dict() from generate_mutant_lib_utils.py
+"""
 import sys
 import os
 import pandas as pd
@@ -11,7 +14,8 @@ from generate_mutant_lib_utils import (
     make_mut_dict
 )
 
-class TestGenerate_Mutant_Lib_Utils:
+class TestMake_Mut_Dict:
+    
 
     @staticmethod
     def test_pass_mixed_codon():

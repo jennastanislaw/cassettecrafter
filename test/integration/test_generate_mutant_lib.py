@@ -1,3 +1,10 @@
+"""
+Integration tests for generate_mutant_lib.py. This file and its main function 
+generate codon sequences of all possible combinations of mutations from dataframe 
+containing information about allowed mutations and the original
+amino acids at those positions
+"""
+
 import sys
 import os
 import pandas as pd
@@ -11,8 +18,14 @@ from generate_mutant_lib import (
 )
 
 class TestGenerate_Mutant_Lib:
+    """Tests for generate_mutant_lib()
+    """
     @staticmethod
     def test_pass():
+        """Ensures that the correct dataframe is output when the DNA sequence and
+            mutation information are provided. This helps verify that helper functions
+            split_to_codons and make_mut_dict work correctly
+        """
         og_codon_seq = Seq("AAGGATGCACAATCG")
 
         in_data = {"Position": [2,4],
