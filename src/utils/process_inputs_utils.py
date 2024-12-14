@@ -211,9 +211,7 @@ def split_csl(csl):
     """
     if type(csl) != str:
         raise TypeError(f"Input must be a string, not a(n) {type(csl).__name__}")
-    elif "," not in csl:
-        raise ValueError("Input must be formatted as a comma-separated list")
-   
+
     return list(val.strip() for val in csl.split(","))
 
 def get_allowed_codon_list(mutations_aa, original_codons):
@@ -330,6 +328,8 @@ def get_mixed_base_codon(codonA, codonB):
             raise TypeError("Input codon must be a string")
         elif len(input_codon) != 3:
             raise ValueError("Input codon must be a string with 3 letters")
+    if codonA[:2] != codonB[:2]:
+        raise ValueError("First two bases on input codons must match")
     
     # Sort the two bases alphabetically to generate the correct key of lookup
     base3_l = [codonA[-1],codonB[-1]]
