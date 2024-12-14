@@ -26,7 +26,7 @@ from utils.split_sites_utils import generate_cassettes
 from process_output import process_output
 
 
-def generate_assembly_library(gene, mutations, enzyme_name, min_oligo_size, max_oligo_size, output):
+def generate_assembly_library(gene, mutations, enzyme_name, min_oligo_size, max_oligo_size, output=""):
     """Generates Golden Gate-compatible sequence library containing all possible
         combinations of allowed mutations 
 
