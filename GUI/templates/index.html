@@ -108,7 +108,7 @@
     <div class="header">
         <h1>Golden Gate Cassette Generator</h1>
         <p>This web application optimizes plasmid sequences for Golden Gate Assembly.</p>
-        <p>Created by: Jenna Stanislaw, Siobahn Kells, Anna Boerman, and Carolina Valderrama Hincapie</p>
+        <p>Created by: Jenna Stanislaw, Siobhan Kells, Anna Boerman, and Carolina Valderrama Hincapie</p>
         <p>Affiliation: University of Colorado Boulder</p>
     </div>
     <div class="container">
@@ -132,16 +132,17 @@
             <label for="enzyme_name">Enzyme Name:</label>
             <select id="enzyme_name" name="enzyme_name">
                 <option value="BbsI" selected>BbsI</option>
-                <option value="BsaI">BsaI</option>
-                <option value="Esp3I">Esp3I</option>
+                <option value="BsaI">PaqCI</option>
+                <option value="Esp3I">SapI</option>
+                <option value="BsmBI">BsaI</option>
                 <option value="BsmBI">BsmBI</option>
             </select>
 
             <label for="min_oligo_size">Minimum Oligo Size:</label>
-            <input type="number" id="min_oligo_size" name="min_oligo_size" min="10" value="20" required>
+            <input type="number" id="min_oligo_size" name="min_oligo_size" min="25" value="20" required>
 
             <label for="max_oligo_size">Maximum Oligo Size:</label>
-            <input type="number" id="max_oligo_size" name="max_oligo_size" min="10" value="100" required>
+            <input type="number" id="max_oligo_size" name="max_oligo_size" min="25" value="100" required>
             
             <br>
             <button type="submit">Optimize</button>
